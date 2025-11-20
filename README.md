@@ -1,10 +1,4 @@
-## Hi there 👋
-
-
-**wikiepeidia/wikiepeidia** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
+## WIKIPEDIA
 ![GitHub Stats](https://github-readme-stats.vercel.app/api?username=wikiepeidia&show_icons=true&theme=graywhite)
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&layout=compact)
