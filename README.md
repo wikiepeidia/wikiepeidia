@@ -5,12 +5,12 @@
 
 Here are some ideas to get you started:
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=wikiepeidia&show_icons=true&theme=graywhite
-)
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=wikiepeidia&show_icons=true&theme=graywhite)
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&layout=compact)
 
-![Snake animation](https://github.com/wikiepeidia/wikiepeidia/blob/output/github-contribution-grid-snake2.svg)
+![Snake animation](https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/github-contribution-grid-snake.svg)
+
 
 
 
