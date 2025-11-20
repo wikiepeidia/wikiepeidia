@@ -10,11 +10,11 @@ Here are some ideas to get you started:
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&layout=compact)
 
-![snake animation](https://github.com/<wikiepeidia>/<wikiepeidia>/blob/output/github-contribution-grid-snake2.svg)
+![Snake animation](https://github.com/wikiepeidia/wikiepeidia/blob/output/github-contribution-grid-snake2.svg)
 
-![GitHub Streak](https://streak-stats.demolab.com?user=wikiepeidia&theme=default)
 
-![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&theme=github)
+
+[![Ashutosh's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&bg_color=ffffff&color=000000&line=9be9a8&point=40c463&area=true&hide_border=true)](https://github.com/ashutosh00710/github-readme-activity-graph)
 
 
 ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=light)
