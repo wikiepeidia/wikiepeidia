@@ -4,9 +4,9 @@
 **wikiepeidia/wikiepeidia** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
 Here are some ideas to get you started:
-ict student
 -----------
 
+* Profession: ICT student b3
 * 🌍  Location: Việt Nam
 * 🖥️  See my portfolio at [canva](http:///www.canva.com/design/DAGseIocpdg/Bk3JI4gDdWy1djcC1ffFbA/edit?utm_content=DAGseIocpdg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 * ✉️  You can contact me at [phamtheminh2409@gmail.com](mailto:phamtheminh2409@gmail.com)
