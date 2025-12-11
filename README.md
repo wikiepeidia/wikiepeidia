@@ -21,23 +21,42 @@ Here are some ideas to get you started:
 <b>My GitHub Stats</b>
 
 <!-- ====================== -->
-<!--   GITHUB STATS        -->
-<!-- ====================== -->
-<picture>
-  <source srcset="https://github-readme-stats.vercel.app/api?username=wikiepeidia&show_icons=true&theme=tokyonight#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-stats.vercel.app/api?username=wikiepeidia&show_icons=true&theme=graywhite#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="GitHub Stats" src="https://github-readme-stats.vercel.app/api?username=wikiepeidia&show_icons=true&theme=graywhite" />
-</picture>
-
-
-<!-- ====================== -->
 <!--   TOP LANGUAGES       -->
 <!-- ====================== -->
 <picture>
-  <source srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&layout=compact&theme=tokyonight#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&layout=compact#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="Top Languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&layout=compact" />
+  <!-- Dark mode -->
+  <source 
+    srcset="https://nirzak-streak-stats.vercel.app/?user=wikiepeidia&theme=dark&hide_border=false"
+    media="(prefers-color-scheme: dark)"
+  />
+
+  <!-- Light mode -->
+  <source 
+    srcset="https://nirzak-streak-stats.vercel.app/?user=wikiepeidia&theme=default&hide_border=false"
+    media="(prefers-color-scheme: light)"
+  />
+
+  <!-- Fallback for unsupported browsers -->
+  <img 
+    alt="GitHub Streak Stats" 
+    src="https://nirzak-streak-stats.vercel.app/?user=wikiepeidia&theme=default&hide_border=false"
+  />
 </picture>
+
+
+
+<!-- ====================== -->
+<!--   GITHUB STATS        -->
+<!-- ====================== -->
+<picture decoding="async" loading="lazy">
+  <source media="(prefers-color-scheme: light)" srcset="https://pixel-profile.vercel.app/api/github-stats?username=wikiepeidia&theme=summer">
+  <source media="(prefers-color-scheme: dark)" srcset="https://pixel-profile.vercel.app/api/github-stats?username=wikiepeidia&screen_effect=true&theme=blue_chill">
+  <img alt="github stats" src="https://pixel-profile.vercel.app/api/github-stats?username=<username>&theme=summer">
+</picture>
+
+
+
+
 
 
 <!-- ====================== -->
@@ -93,3 +112,4 @@ Here are some ideas to get you started:
 <a href="https://www.buymeacoffee.com/wikiepeidia"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="150"/></a>
 </ul>
 
+[![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/wikiepeidia) 
