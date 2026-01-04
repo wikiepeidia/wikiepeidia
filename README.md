@@ -8,7 +8,7 @@ Here are some ideas to get you started:
 
 * Profession: ICT student b3
 * 🌍  Location: Việt Nam
-* 🖥️  See my portfolio at [canva](http:///www.canva.com/design/DAGseIocpdg/Bk3JI4gDdWy1djcC1ffFbA/edit?utm_content=DAGseIocpdg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+* 🖥️  See my portfolio at [canva](https://www.topcv.vn/xem-cv/XgBfAFEIWgQPAl0GCQdXCFNYXFxQWwYHAFACAAbfb3)
 * ✉️  You can contact me at [phamtheminh2409@gmail.com](mailto:phamtheminh2409@gmail.com)
 * 🧠  I'm currently learning programming and stuffs
 * 👥  I'm looking to collaborate on projects
