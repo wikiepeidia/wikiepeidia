@@ -26,33 +26,25 @@ Here are some ideas to get you started:
 <picture>
   <!-- Dark mode -->
   <source 
-    srcset="https://nirzak-streak-stats.vercel.app/?user=wikiepeidia&theme=dark&hide_border=false"
+    srcset="http://streak-stats.demolab.com/?user=wikiepeidia&theme=dark&locale=vi"
     media="(prefers-color-scheme: dark)"
   />
 
   <!-- Light mode -->
   <source 
-    srcset="https://nirzak-streak-stats.vercel.app/?user=wikiepeidia&theme=default&hide_border=false"
+    srcset="https://streak-stats.demolab.com?user=wikiepeidia&locale=vi"
     media="(prefers-color-scheme: light)"
   />
 
   <!-- Fallback for unsupported browsers -->
   <img 
     alt="GitHub Streak Stats" 
-    src="https://nirzak-streak-stats.vercel.app/?user=wikiepeidia&theme=default&hide_border=false"
+    src="https://streak-stats.demolab.com?user=wikiepeidia&locale=vi"
   />
 </picture>
 
 
 
-<!-- ====================== -->
-<!--   GITHUB STATS        -->
-<!-- ====================== -->
-<picture decoding="async" loading="lazy">
-  <source media="(prefers-color-scheme: light)" srcset="https://pixel-profile.vercel.app/api/github-stats?username=wikiepeidia&theme=summer">
-  <source media="(prefers-color-scheme: dark)" srcset="https://pixel-profile.vercel.app/api/github-stats?username=wikiepeidia&screen_effect=true&theme=blue_chill">
-  <img alt="github stats" src="https://pixel-profile.vercel.app/api/github-stats?username=<username>&theme=summer">
-</picture>
 
 
 
