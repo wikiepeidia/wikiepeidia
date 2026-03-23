@@ -101,4 +101,5 @@ Here are some ideas to get you started
 [![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/wikiepeidia)
 <br/>
 
-![test](images/bank.jpg)]
+**TechComBank:**
+<img src="images/bank.jpg?v=1" width="300" alt="Friend's Image">
