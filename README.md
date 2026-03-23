@@ -92,10 +92,8 @@ Here are some ideas to get you started
 
 ## Support Me
 
-<ul style="list-style-type: none; margin: 0;">
-
 <a href="https://www.buymeacoffee.com/wikiepeidia"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="150"/></a>
-</ul>
 
 [![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/wikiepeidia)
-![](images/bank.jpg)
+
+<img src="images/bank.jpg" width="300" alt="Friend's Image">
