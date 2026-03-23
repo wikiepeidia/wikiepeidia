@@ -67,9 +67,9 @@ Here are some ideas to get you started
 <br/>
 
 <picture>
-  <source srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&theme=dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="Top Languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact" />
+  <source srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&theme=dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook#gh-light-mode-only" media="(prefers-color-scheme: light)" />
+  <img alt="Top Languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook" />
 </picture>
 <!-- ====================== -->
 <!--        QUOTES         -->
