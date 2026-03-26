@@ -57,12 +57,6 @@ Here are some ideas to get you started
   <img alt="Activity Graph" src="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&bg_color=ffffff&color=000000&line=9be9a8&point=40c463&area=true&hide_border=true" />
 </picture>
 
-<picture>
-  <source srcset="https://github-readme-stats.vercel.app/api?username=wikiepeidia&theme=dark&hide_border=false&include_all_commits=true&count_private=true#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-stats.vercel.app/api?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="GitHub General Stats" src="https://github-readme-stats.vercel.app/api?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true" />
-</picture>
-<br/>
 
 <br/>
 
