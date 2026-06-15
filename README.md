@@ -28,7 +28,7 @@ Here are some ideas to get you started
 
   <!-- Light mode -->
   <source
-    srcset="https://streak-stats.demolab.com?user=wikiepeidia&locale=vi"
+    srcset="https://streak-stats.demolab.com/?user=wikiepeidia&locale=vi"
     media="(prefers-color-scheme: light)"
   />
 
