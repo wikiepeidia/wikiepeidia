@@ -23,11 +23,6 @@ Here are some ideas to get you started
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 <br/>
 
-<picture>
-  <source srcset="https://github-readme-stats.shion.dev/api/top-langs/?username=wikiepeidia&theme=dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-stats.shion.dev/api/top-langs/?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="Top Languages" src="github-readme-stats.shion.dev/api/top-langs/?username=wikiepeidia&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook" />
-</picture>
 
 <!-- ====================== -->
 <!--        QUOTES         -->
