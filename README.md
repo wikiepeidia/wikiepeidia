@@ -16,48 +16,11 @@ Here are some ideas to get you started
 
 <b>My GitHub Stats</b>
 
-<!-- ====================== -->
-<!--   TOP LANGUAGES       -->
-<!-- ====================== -->
-<picture>
-  <!-- Dark mode -->
-  <source
-    srcset="http://streak-stats.demolab.com/?user=wikiepeidia&theme=dark&locale=vi"
-    media="(prefers-color-scheme: dark)"
-  />
+![](https://github-readme-stats.shion.dev/api?username=wikiepeidia&theme=solarized-light&hide_border=false&include_all_commits=true&count_private=true)<br/>
+![](https://streak-stats.demolab.com/?user=wikiepeidia&theme=solarized-light&hide_border=false)<br/>
+![](https://github-readme-stats.shion.dev/api/top-langs/?username=wikiepeidia&theme=solarized-light&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
 
-  <!-- Light mode -->
-  <source
-    srcset="https://streak-stats.demolab.com/?user=wikiepeidia&locale=vi"
-    media="(prefers-color-scheme: light)"
-  />
-
-  <!-- Fallback for unsupported browsers -->
-  <img
-    alt="GitHub Streak Stats"
-    src="https://streak-stats.demolab.com?user=wikiepeidia&locale=vi"
-  />
-</picture>
-
-<!-- ====================== -->
-<!--   PACMAN GRAPH        -->
-<!-- ====================== -->
-<picture>
-  <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph-dark.svg#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="Pacman Contribution Graph" src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg" />
-</picture>
-
-<!-- ====================== -->
-<!--   ACTIVITY GRAPH      -->
-<!-- ====================== -->
-<picture>
-  <source srcset="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&bg_color=0d1117&color=9be9a8&line=4c8eda&point=38d252&area=true&hide_border=true#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&bg_color=ffffff&color=000000&line=9be9a8&point=40c463&area=true&hide_border=true#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="Activity Graph" src="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&bg_color=ffffff&color=000000&line=9be9a8&point=40c463&area=true&hide_border=true" />
-</picture>
-
-
+<!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 <br/>
 
 <picture>
