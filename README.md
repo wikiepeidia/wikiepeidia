@@ -18,7 +18,7 @@ Here are some ideas to get you started
 
 ![](https://github-readme-stats.shion.dev/api?username=wikiepeidia&theme=solarized-light&hide_border=false&include_all_commits=true&count_private=true)<br/>
 ![](https://streak-stats.demolab.com/?user=wikiepeidia&theme=solarized-light&hide_border=false)<br/>
-![](https://github-readme-stats.shion.dev/api/top-langs/?username=wikiepeidia&theme=solarized-light&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
+![Top Languages](https://github-readme-stats.shion.dev/api/top-langs/?username=wikiepeidia&theme=solarized-light&hide_border=false&include_all_commits=true&count_private=true&layout=compact&hide=jupyter%20notebook)
 
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 <br/>
