@@ -5,9 +5,9 @@
 Here are some ideas to get you started
 -----------
 
-* Profession: ICT student b3
+* Profession: ICT student b3& software developer in fpt software 
 * 🌍  Location: Việt Nam
-* 🖥️  See my portfolio at [canva](https://www.topcv.vn/xem-cv/XgBfAFEIWgQPAl0GCQdXCFNYXFxQWwYHAFACAAbfb3)
+* 🖥️  See my portfolio at [canva]
 * ✉️  You can contact me at [phamtheminh2409@gmail.com](mailto:phamtheminh2409@gmail.com)
 * 🧠  I'm currently learning programming and stuffs
 * 👥  I'm looking to collaborate on projects
