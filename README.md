@@ -11,6 +11,15 @@ Here are some ideas to get you started
 * ✉️  You can contact me at [phamtheminh2409@gmail.com](mailto:phamtheminh2409@gmail.com)
 * 🧠  I'm currently learning programming and stuffs
 * 👥  I'm looking to collaborate on projects
+## Quotes
+<!-- ====================== -->
+<!--        QUOTES         -->
+<!-- ====================== -->
+<picture>
+  <source srcset="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=light#gh-light-mode-only" media="(prefers-color-scheme: light)" />
+  <img alt="Quotes" src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=light" />
+</picture>
 
 ## Statistivc
 
@@ -27,15 +36,7 @@ Here are some ideas to get you started
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 <br/>
 
-# Quotes
-<!-- ====================== -->
-<!--        QUOTES         -->
-<!-- ====================== -->
-<picture>
-  <source srcset="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=light#gh-light-mode-only" media="(prefers-color-scheme: light)" />
-  <img alt="Quotes" src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=light" />
-</picture>
+
 
 <b>My GitHub Badges</b>
 
