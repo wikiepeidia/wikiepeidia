@@ -1,4 +1,4 @@
-## Hi there 👋
+# Hi there 👋
 
 **wikiepeidia/wikiepeidia** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
@@ -14,7 +14,11 @@ Here are some ideas to get you started
 
 ## Statistivc
 
-<b>My GitHub Stats</b>
+<b>My GitHub Commits  Stats</b>
+
+![](https://github.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg)
+
+<b>My GitHub General Stats</b>
 
 ![](https://github-readme-stats.shion.dev/api?username=wikiepeidia&theme=solarized-light&hide_border=false&include_all_commits=true&count_private=true)<br/>
 ![](https://streak-stats.demolab.com/?user=wikiepeidia&theme=solarized-light&hide_border=false)<br/>
@@ -23,7 +27,7 @@ Here are some ideas to get you started
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 <br/>
 
-
+# Quotes
 <!-- ====================== -->
 <!--        QUOTES         -->
 <!-- ====================== -->
