@@ -16,7 +16,7 @@ Here are some ideas to get you started
 
 <b>My GitHub Commits  Stats</b>
 
-![](https://github.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg)
+![](https://github.com/wikiepeidia/wikiepeidia/blob/output/pacman-contribution-graph.svg)
 
 <b>My GitHub General Stats</b>
 
