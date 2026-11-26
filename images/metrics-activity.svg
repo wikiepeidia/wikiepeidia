@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="668" viewBox="0 0 480 668" role="img"><title>Pushes by weekday and recent activity</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="666" viewBox="0 0 480 666" role="img"><title>Pushes by weekday and recent activity</title>
 <style>
 text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
 .heading { font-size: 21px; font-weight: 650 }
@@ -12,54 +12,48 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 }
 </style>
 <text x="16" y="32" class="heading" text-anchor="start">Pushes by weekday</text>
-<text x="16" y="56" class="meta" text-anchor="start">Latest 100 public events · UTC+7</text>
+<text x="16" y="56" class="meta" text-anchor="start">Latest 196 public events · UTC+7</text>
 <path class="rule" d="M16 152 H464"/>
-<rect class="bar" x="35" y="152" width="26" height="0" rx="3"/>
-<text x="48" y="145" class="" text-anchor="middle">0</text>
+<rect class="bar" x="35" y="131" width="26" height="21" rx="3"/>
+<text x="48" y="124" class="" text-anchor="middle">4</text>
 <text x="48" y="173" class="meta" text-anchor="middle">Mon</text>
-<rect class="bar" x="99" y="139" width="26" height="13" rx="3"/>
-<text x="112" y="132" class="" text-anchor="middle">1</text>
+<rect class="bar" x="99" y="116" width="26" height="36" rx="3"/>
+<text x="112" y="109" class="" text-anchor="middle">7</text>
 <text x="112" y="173" class="meta" text-anchor="middle">Tue</text>
 <rect class="bar" x="163" y="85" width="26" height="67" rx="3"/>
-<text x="176" y="78" class="" text-anchor="middle">5</text>
+<text x="176" y="78" class="" text-anchor="middle">13</text>
 <text x="176" y="173" class="meta" text-anchor="middle">Wed</text>
-<rect class="bar" x="227" y="139" width="26" height="13" rx="3"/>
-<text x="240" y="132" class="" text-anchor="middle">1</text>
+<rect class="bar" x="227" y="147" width="26" height="5" rx="3"/>
+<text x="240" y="140" class="" text-anchor="middle">1</text>
 <text x="240" y="173" class="meta" text-anchor="middle">Thu</text>
-<rect class="bar" x="291" y="98" width="26" height="54" rx="3"/>
-<text x="304" y="91" class="" text-anchor="middle">4</text>
+<rect class="bar" x="291" y="126" width="26" height="26" rx="3"/>
+<text x="304" y="119" class="" text-anchor="middle">5</text>
 <text x="304" y="173" class="meta" text-anchor="middle">Fri</text>
-<rect class="bar" x="355" y="139" width="26" height="13" rx="3"/>
-<text x="368" y="132" class="" text-anchor="middle">1</text>
+<rect class="bar" x="355" y="147" width="26" height="5" rx="3"/>
+<text x="368" y="140" class="" text-anchor="middle">1</text>
 <text x="368" y="173" class="meta" text-anchor="middle">Sat</text>
-<rect class="bar" x="419" y="125" width="26" height="27" rx="3"/>
-<text x="432" y="118" class="" text-anchor="middle">2</text>
+<rect class="bar" x="419" y="137" width="26" height="15" rx="3"/>
+<text x="432" y="130" class="" text-anchor="middle">3</text>
 <text x="432" y="173" class="meta" text-anchor="middle">Sun</text>
-<text x="16" y="218" class="heading" text-anchor="start">Recent activity</text>
-<text x="16" y="252" class="name" text-anchor="start">ANSER_AI_Logistics</text>
-<text x="464" y="252" class="meta" text-anchor="end">26 Nov</text>
-<text x="16" y="273" class="meta" text-anchor="start">ANSER-Logistics · 2 PR events</text>
-<path class="rule" d="M16 284 H464"/>
-<text x="16" y="310" class="name" text-anchor="start">ANSER-logistics-body</text>
-<text x="464" y="310" class="meta" text-anchor="end">26 Nov</text>
-<text x="16" y="331" class="meta" text-anchor="start">ANSER-Logistics · 1 review</text>
-<path class="rule" d="M16 342 H464"/>
-<text x="16" y="368" class="name" text-anchor="start">ANSER_AI_Logistics</text>
-<text x="464" y="368" class="meta" text-anchor="end">26 Nov</text>
-<text x="16" y="389" class="meta" text-anchor="start">ANSER-Logistics · 4 reviews</text>
-<path class="rule" d="M16 400 H464"/>
-<text x="16" y="426" class="name" text-anchor="start">ANSER_AI_Logistics</text>
-<text x="464" y="426" class="meta" text-anchor="end">25 Nov</text>
-<text x="16" y="447" class="meta" text-anchor="start">ANSER-Logistics · 2 issue events</text>
-<path class="rule" d="M16 458 H464"/>
-<text x="16" y="484" class="name" text-anchor="start">ANSER_AI_Logistics</text>
-<text x="464" y="484" class="meta" text-anchor="end">24 Nov</text>
-<text x="16" y="505" class="meta" text-anchor="start">ANSER-Logistics · 1 push</text>
-<path class="rule" d="M16 516 H464"/>
-<text x="16" y="542" class="name" text-anchor="start">ANSER_AI_Logistics</text>
-<text x="464" y="542" class="meta" text-anchor="end">24 Nov</text>
-<text x="16" y="563" class="meta" text-anchor="start">ANSER-Logistics · 5 reviews</text>
-<path class="rule" d="M16 574 H464"/>
-<text x="16" y="616" class="heading" text-anchor="start">WakaTime · last 7 days</text>
-<text x="16" y="642" class="meta" text-anchor="start">0 secs</text>
+<text x="16" y="218" class="heading" text-anchor="start">Recently active repositories</text>
+<text x="16" y="243" class="meta" text-anchor="start">Past year’s contributions · recent public event counts</text>
+<text x="16" y="280" class="name" text-anchor="start">ANSER-Logistics/ANSER_AI_Logistics</text>
+<text x="16" y="302" class="meta" text-anchor="start">2 issues · 7 PRs · 9 reviews · 98 recent events</text>
+<path class="rule" d="M16 316 H464"/>
+<text x="16" y="342" class="name" text-anchor="start">ANSER-Logistics/ANSER-logistics-body</text>
+<text x="16" y="364" class="meta" text-anchor="start">11 issues · 4 PRs · 2 reviews · 74 recent events</text>
+<path class="rule" d="M16 378 H464"/>
+<text x="16" y="404" class="name" text-anchor="start">wikiepeidia/AI-Prompt-comparision-</text>
+<text x="16" y="426" class="name" text-anchor="start">homework</text>
+<text x="16" y="448" class="meta" text-anchor="start">2 commits · 2 recent events</text>
+<path class="rule" d="M16 462 H464"/>
+<text x="16" y="488" class="name" text-anchor="start">wikiepeidia/video-ytp-remaker</text>
+<text x="16" y="510" class="meta" text-anchor="start">11 commits · 3 recent events</text>
+<path class="rule" d="M16 524 H464"/>
+<text x="16" y="550" class="name" text-anchor="start">wikiepeidia/STRAVA-editor</text>
+<text x="16" y="572" class="meta" text-anchor="start">5 commits · 5 recent events</text>
+<path class="rule" d="M16 586 H464"/>
+<text x="16" y="612" class="name" text-anchor="start">ANSER-Logistics/.github</text>
+<text x="16" y="634" class="meta" text-anchor="start">3 commits · 4 recent events</text>
+<path class="rule" d="M16 648 H464"/>
 </svg>
