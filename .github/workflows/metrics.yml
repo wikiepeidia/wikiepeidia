@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/workflows/metrics.yml]
+    paths: [.github/workflows/metrics.yml, .github/scripts/profile_activity.py]
 
 concurrency:
   group: profile-metrics
@@ -18,14 +18,15 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+
       - name: Overview, contribution calendar, and languages
         uses: lowlighter/metrics@v3.34
         with:
           token: ${{ secrets.METRICS_TOKEN }}
-          committer_branch: main
+          output_action: none
           filename: images/metrics-overview.svg
           config_timezone: Asia/Ho_Chi_Minh
-          output_condition: data-changed
           base: header, activity, community, repositories
           base_indepth: 'yes'
           plugin_isocalendar: 'yes'
@@ -34,24 +35,21 @@ jobs:
           plugin_languages_ignored: Jupyter Notebook
           plugin_languages_details: percentage
 
-      - name: Coding habits, recent activity, and starred repositories
-        uses: lowlighter/metrics@v3.34
+      - name: Render public activity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/profile_activity.py
+
+      - name: Collect rendered cards
+        run: |
+          mkdir -p publish/images
+          cp /metrics_renders/images/metrics-overview.svg images/metrics-{activity,stars}.svg publish/images/
+
+      - name: Publish profile metrics
+        uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          committer_branch: main
-          filename: images/metrics-activity.svg
-          config_timezone: Asia/Ho_Chi_Minh
-          output_condition: data-changed
-          base: ''
-          plugin_habits: 'yes'
-          plugin_habits_charts: 'yes'
-          plugin_habits_days: '30'
-          plugin_activity: 'yes'
-          plugin_activity_days: '90'
-          plugin_activity_filter: push, pr, issue, review, release
-          plugin_activity_limit: '6'
-          plugin_activity_skipped: wikiepeidia/wikiepeidia
-          plugin_activity_timestamps: 'yes'
-          plugin_activity_visibility: public
-          plugin_stars: 'yes'
-          plugin_stars_limit: '4'
+          target_branch: metrics-output
+          build_dir: publish
+          keep_history: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 149" width="480" height="149">
+<style>text{font:14px system-ui,sans-serif;fill:#24292f}.heading{font-weight:650;fill:#0969da}@media(prefers-color-scheme:dark){text{fill:#e6edf3}.heading{fill:#58a6ff}}</style>
+<text class="heading" x="12" y="23">Recently starred repositories</text>
+<text x="12" y="50"><title>gsd-build/get-shit-done</title>gsd-build/get-shit-done</text>
+<text x="12" y="74"><title>wikiepeidia/ANSER</title>wikiepeidia/ANSER</text>
+<text x="12" y="98"><title>josipjelic/orchestrated-project-template</title>josipjelic/orchestrated-project-template</text>
+<text x="12" y="122"><title>abhigyanpatwari/GitNexus</title>abhigyanpatwari/GitNexus</text>
+</svg>

@@ -14,15 +14,23 @@ Here are some ideas to get you started
 
 ## GitHub Stats
 
-![GitHub overview, contribution calendar, current streak, and top languages](images/metrics-overview.svg)
-
+<table>
+<tr><th>Overview and languages</th><th>Activity and stars</th></tr>
+<tr>
+<td width="50%" valign="top"><img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-overview.svg" alt="GitHub overview, contribution calendar, streak, and top languages"></td>
+<td width="50%" valign="top">
+<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-activity.svg" alt="Public pushes by weekday and recent activity">
+<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-stars.svg" alt="Recently starred repositories">
+</td>
+</tr>
+<tr><td colspan="2" align="center">
 <picture>
   <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph-dark.svg#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
   <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg#gh-light-mode-only" media="(prefers-color-scheme: light)" />
   <img alt="Pacman Contribution Graph" src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg" />
 </picture>
-
-![Coding habits, recent activity, and starred repositories](images/metrics-activity.svg)
+</td></tr>
+</table>
 
 ## Languages and tools
 
