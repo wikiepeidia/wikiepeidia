@@ -7,6 +7,8 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
+from urllib.error import URLError
+from urllib.request import Request, urlopen
 from textwrap import shorten
 
 
@@ -86,7 +88,36 @@ def render_activity(owner, events):
     if not groups:
         body.append(label(16, y, "No matching public activity.", "meta"))
         y += 34
+    token = os.environ.get("WAKATIME_TOKEN")
+    if token:
+        try:
+            y = append_wakatime(body, y, token)
+        except (URLError, TimeoutError, ValueError, KeyError) as error:
+            print(f"::warning::Weekly WakaTime stats unavailable ({getattr(error, 'code', type(error).__name__)}).")
     save("metrics-activity.svg", "Pushes by weekday and recent activity", body, y-8)
+
+
+def append_wakatime(body, y, token):
+    request = Request("https://wakatime.com/api/v1/users/current/stats/last_7_days",
+                      headers={"Authorization": f"Bearer {token}"})
+    with urlopen(request, timeout=15) as response:
+        stats = json.load(response)["data"]
+    panel = [label(16, y+16, "WakaTime · last 7 days", "heading"),
+             label(16, y+42, stats["human_readable_total"], "meta")]
+    y += 76
+    for section in ("projects", "languages"):
+        rows = (stats.get(section) or [])[:5]
+        if rows:
+            panel.append(label(16, y, section.title(), "name"))
+            y += 24
+        for row in rows:
+            percent = max(0, min(100, float(row["percent"])))
+            panel.extend([label(16, y, clipped(row["name"], 24)),
+                          f'<rect class="bar" x="242" y="{y-10}" width="{percent*1.5:.1f}" height="8" rx="4"/>',
+                          label(464, y, f"{percent:g}%", "meta", "end")])
+            y += 24
+    body.extend(panel)
+    return y
 
 
 def render_stars(stars):

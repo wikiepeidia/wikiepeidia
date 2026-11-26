@@ -44,9 +44,6 @@ jobs:
           plugin_followup: 'yes'
           plugin_followup_sections: repositories
           plugin_followup_indepth: 'yes'
-          plugin_wakatime: ${{ secrets.WAKATIME_API_KEY != '' && 'yes' || 'no' }}
-          plugin_wakatime_token: ${{ secrets.WAKATIME_API_KEY }}
-          plugin_wakatime_days: '7'
           plugin_isocalendar: 'yes'
           plugin_isocalendar_duration: full-year
           plugin_languages: 'yes'
@@ -56,6 +53,7 @@ jobs:
       - name: Render public activity
         env:
           GH_TOKEN: ${{ github.token }}
+          WAKATIME_TOKEN: ${{ secrets.WAKATIME_OAUTH_TOKEN }}
         run: python3 .github/scripts/profile_activity.py
 
       - name: Collect rendered cards
