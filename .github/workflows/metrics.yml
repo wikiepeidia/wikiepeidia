@@ -37,12 +37,15 @@ jobs:
           config_timezone: Asia/Ho_Chi_Minh
           base: header, activity, community, repositories
           base_indepth: 'yes'
+          repositories_affiliations: owner, collaborator, organization_member
+          repositories: '500'
+          repositories_batch: '25'
           extras_js: |
             for (const field of document.querySelectorAll("div.field")) {
               if (/^Prefers\s+.+\s+license$/i.test(field.textContent.trim())) field.remove()
             }
           plugin_followup: 'yes'
-          plugin_followup_sections: repositories
+          plugin_followup_sections: repositories, user
           plugin_followup_indepth: 'yes'
           plugin_isocalendar: 'yes'
           plugin_isocalendar_duration: full-year
