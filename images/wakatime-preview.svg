@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="698" viewBox="0 0 480 698" role="img"><title>WakaTime dashboard preview</title>
+<style>
+text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
+.heading { font-size: 21px; font-weight: 650 }
+.name { font-size: 17px; font-weight: 600 }
+.meta { font-size: 14px; fill: #59636e }
+.bar { fill: #1f883d }
+.rule { stroke: #d1d9e0 }
+@media (prefers-color-scheme: dark) {
+  text { fill: #f0f6fc } .meta { fill: #a3adb7 }
+  .bar { fill: #3fb950 } .rule { stroke: #3d444d }
+}
+</style>
+<text x="16" y="32" class="heading" text-anchor="start">WakaTime · dashboard preview</text>
+<text x="16" y="55" class="meta" text-anchor="start">26 Nov snapshot · lifetime total unavailable</text>
+<g transform="translate(0 12)">
+<text x="16" y="80" class="name" text-anchor="start">Last 7 days · UTC+7</text>
+<text x="16" y="102" class="" text-anchor="start">2026-11-26</text>
+<rect class="bar" x="240" y="92" width="145.0" height="8" rx="4"/>
+<text x="464" y="102" class="meta" text-anchor="end">50 min</text>
+<text x="16" y="126" class="meta" text-anchor="start">Daily average</text>
+<text x="464" y="126" class="" text-anchor="end">50 min</text>
+<text x="16" y="149" class="meta" text-anchor="start">AI prompts</text>
+<text x="464" y="149" class="" text-anchor="end">14</text>
+<text x="16" y="172" class="meta" text-anchor="start">AI sessions</text>
+<text x="464" y="172" class="" text-anchor="end">1</text>
+<text x="16" y="195" class="meta" text-anchor="start">Input tokens</text>
+<text x="464" y="195" class="" text-anchor="end">8,800,000</text>
+<text x="16" y="218" class="meta" text-anchor="start">Output tokens</text>
+<text x="464" y="218" class="" text-anchor="end">10,300</text>
+<text x="16" y="241" class="meta" text-anchor="start">Estimated AI spend</text>
+<text x="464" y="241" class="" text-anchor="end">$4.17</text>
+<text x="16" y="264" class="meta" text-anchor="start">Best day · 2026-11-26 · 50 min</text>
+<text x="16" y="300" class="name" text-anchor="start">AI model line changes</text>
+<text x="16" y="322" class="" text-anchor="start">GPT</text>
+<rect class="bar" x="240" y="312" width="145.0" height="8" rx="4"/>
+<text x="464" y="322" class="meta" text-anchor="end">40</text>
+<text x="16" y="358" class="name" text-anchor="start">Languages</text>
+<text x="16" y="380" class="" text-anchor="start">YAML</text>
+<rect class="bar" x="240" y="370" width="71.2" height="8" rx="4"/>
+<text x="464" y="380" class="meta" text-anchor="end">49%</text>
+<text x="16" y="402" class="" text-anchor="start">Markdown</text>
+<rect class="bar" x="240" y="392" width="30.8" height="8" rx="4"/>
+<text x="464" y="402" class="meta" text-anchor="end">21%</text>
+<text x="16" y="424" class="" text-anchor="start">Python</text>
+<rect class="bar" x="240" y="414" width="20.4" height="8" rx="4"/>
+<text x="464" y="424" class="meta" text-anchor="end">14%</text>
+<text x="16" y="446" class="" text-anchor="start">Other</text>
+<rect class="bar" x="240" y="436" width="22.6" height="8" rx="4"/>
+<text x="464" y="446" class="meta" text-anchor="end">16%</text>
+<text x="16" y="482" class="name" text-anchor="start">Editors</text>
+<text x="16" y="504" class="" text-anchor="start">VS Code</text>
+<rect class="bar" x="240" y="494" width="76.7" height="8" rx="4"/>
+<text x="464" y="504" class="meta" text-anchor="end">53%</text>
+<text x="16" y="526" class="" text-anchor="start">Codex VSCode</text>
+<rect class="bar" x="240" y="516" width="68.3" height="8" rx="4"/>
+<text x="464" y="526" class="meta" text-anchor="end">47%</text>
+<text x="16" y="562" class="name" text-anchor="start">Projects</text>
+<text x="16" y="584" class="" text-anchor="start">wikiepeidia</text>
+<rect class="bar" x="240" y="574" width="145.0" height="8" rx="4"/>
+<text x="464" y="584" class="meta" text-anchor="end">100%</text>
+<text x="16" y="620" class="name" text-anchor="start">Operating systems</text>
+<text x="16" y="642" class="" text-anchor="start">Windows</text>
+<rect class="bar" x="240" y="632" width="145.0" height="8" rx="4"/>
+<text x="464" y="642" class="meta" text-anchor="end">100%</text>
+</g>
+</svg>

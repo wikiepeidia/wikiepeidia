@@ -13,7 +13,7 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 </style>
 <text x="16" y="32" class="heading" text-anchor="start">Recently starred</text>
 <text x="16" y="68" class="name" text-anchor="start">get-shit-done</text>
-<text x="16" y="90" class="meta" text-anchor="start">gsd-build · JavaScript · 64,121 stars</text>
+<text x="16" y="90" class="meta" text-anchor="start">gsd-build · JavaScript · 64,120 stars</text>
 <text x="16" y="112" class="" text-anchor="start">A light-weight and powerful meta-prompting, context…</text>
 <path class="rule" d="M16 126 H464"/>
 <text x="16" y="152" class="name" text-anchor="start">ANSER</text>
@@ -25,7 +25,7 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <text x="16" y="280" class="" text-anchor="start">A Claude Code project template with pre-configured…</text>
 <path class="rule" d="M16 294 H464"/>
 <text x="16" y="320" class="name" text-anchor="start">GitNexus</text>
-<text x="16" y="342" class="meta" text-anchor="start">abhigyanpatwari · TypeScript · 48,896 stars</text>
+<text x="16" y="342" class="meta" text-anchor="start">abhigyanpatwari · TypeScript · 48,901 stars</text>
 <text x="16" y="364" class="" text-anchor="start">GitNexus: The Zero-Server Code Intelligence Engine</text>
 <path class="rule" d="M16 378 H464"/>
 </svg>

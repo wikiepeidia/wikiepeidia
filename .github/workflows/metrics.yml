@@ -59,7 +59,7 @@ jobs:
       - name: Collect rendered cards
         run: |
           mkdir -p publish/images
-          cp /metrics_renders/images/metrics-overview.svg images/metrics-{activity,stars}.svg publish/images/
+          cp /metrics_renders/images/metrics-overview.svg images/metrics-{activity,wakatime}.svg publish/images/
 
       - name: Publish profile metrics
         uses: crazy-max/ghaction-github-pages@v3.1.0
