@@ -12,6 +12,13 @@ Here are some ideas to get you started
 * 🧠  I'm currently learning programming and stuffs
 * 👥  I'm looking to collaborate on projects
 
+## Quotes
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://quotes-github-readme.vercel.app/api?type=horizontal&amp;theme=dark" />
+  <img alt="Programming quote" src="https://quotes-github-readme.vercel.app/api?type=horizontal&amp;theme=light" />
+</picture>
+
 ## GitHub Stats
 
 <table>
@@ -25,8 +32,7 @@ Here are some ideas to get you started
 </tr>
 <tr><td colspan="2" align="center">
 <picture>
-  <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph-dark.svg#gh-dark-mode-only" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg#gh-light-mode-only" media="(prefers-color-scheme: light)" />
+  <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph-dark.svg" media="(prefers-color-scheme: dark)" />
   <img alt="Pacman Contribution Graph" src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg" />
 </picture>
 </td></tr>
@@ -34,45 +40,66 @@ Here are some ideas to get you started
 
 ## Languages and tools
 
-<p align="left">
-  <a href="https://docs.microsoft.com/en-us/cpp/?view=msvc-170"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/c/c-original.svg" alt="C" title="C" width="32" height="32" /></a>
-  <a href="https://git-scm.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/git/git-original.svg" alt="Git" title="Git" width="32" height="32" /></a>
-  <a href="https://www.python.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/python/python-original.svg" alt="Python" title="Python" width="32" height="32" /></a>
-  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/javascript/javascript-original.svg" alt="JavaScript" title="JavaScript" width="32" height="32" /></a>
-  <a href="https://www.gnu.org/software/bash/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/bash/bash-original.svg" alt="GNU Bash" title="GNU Bash" width="32" height="32" /></a>
-  <a href="https://code.visualstudio.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/vscode/vscode-original.svg" alt="VS Code" title="VS Code" width="32" height="32" /></a>
-  <a href="https://www.vim.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/vim/vim-original.svg" alt="Vim" title="Vim" width="32" height="32" /></a>
-  <a href="https://developer.mozilla.org/en-US/docs/Glossary/HTML5"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/html5/html5-original.svg" alt="HTML5" title="HTML5" width="32" height="32" /></a>
-  <a href="https://nodejs.org/en/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/nodejs/nodejs-original.svg" alt="NodeJS" title="NodeJS" width="32" height="32" /></a>
-  <a href="https://www.mysql.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/mysql/mysql-original.svg" alt="MySQL" title="MySQL" width="32" height="32" /></a>
-  <a href="https://www.mongodb.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/mongodb/mongodb-original.svg" alt="MongoDB" title="MongoDB" width="32" height="32" /></a>
-  <a href="https://www.postgresql.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" title="PostgreSQL" width="32" height="32" /></a>
-  <a href="https://www.linux.org"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/linux/linux-original.svg" alt="Linux" title="Linux" width="32" height="32" /></a>
-  <a href="https://ubuntu.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/ubuntu/ubuntu-original.svg" alt="Ubuntu" title="Ubuntu" width="32" height="32" /></a>
-  <a href="https://www.tensorflow.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/tensorflow/tensorflow-original.svg" alt="TensorFlow" title="TensorFlow" width="32" height="32" /></a>
-</p>
+<table>
+  <tr><th align="left">Languages</th><td>
+    <a href="https://www.python.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/python/python-original.svg" alt="Python" title="Python" width="32" height="32"></a>
+    <a href="https://dev.java/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/java/java-original.svg" alt="Java" title="Java" width="32" height="32"></a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/javascript/javascript-original.svg" alt="JavaScript" title="JavaScript" width="32" height="32"></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/typescript/typescript-original.svg" alt="TypeScript" title="TypeScript" width="32" height="32"></a>
+  </td></tr>
+  <tr><th align="left">Frontend</th><td>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/html5/html5-original.svg" alt="HTML" title="HTML" width="32" height="32"></a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/css/css-original.svg" alt="CSS" title="CSS" width="32" height="32"></a>
+    <a href="https://vuejs.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/vuejs/vuejs-original.svg" alt="Vue" title="Vue" width="32" height="32"></a>
+  </td></tr>
+  <tr><th align="left">Development tools</th><td>
+    <a href="https://code.visualstudio.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/vscode/vscode-original.svg" alt="VS Code" title="VS Code" width="32" height="32"></a>
+    <a href="https://git-scm.com/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/git/git-original.svg" alt="Git" title="Git" width="32" height="32"></a>
+    <a href="https://www.gnu.org/software/bash/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/bash/bash-original.svg" alt="Linux CLI (Bash)" title="Linux CLI (Bash)" width="32" height="32"></a>
+  </td></tr>
+  <tr><th align="left">AI tools</th><td>
+    <a href="https://chatgpt.com/codex"><img src="images/codex.svg" alt="ChatGPT Codex" title="ChatGPT Codex" width="32" height="32"></a>
+    <a href="https://gemini.google.com/"><img src="images/gemini.svg" alt="Gemini" title="Gemini" width="32" height="32"></a>
+    <a href="https://claude.com/product/claude-code"><img src="images/claudecode.svg" alt="Claude Code" title="Claude Code" width="32" height="32"></a>
+  </td></tr>
+  <tr><th align="left">Operating systems</th><td>
+    <a href="https://www.microsoft.com/windows/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/windows11/windows11-original.svg" alt="Windows" title="Windows" width="32" height="32"></a>
+    <a href="https://www.linux.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/linux/linux-original.svg" alt="Linux" title="Linux" width="32" height="32"></a>
+  </td></tr>
+  <tr><th align="left">Database</th><td>
+    <a href="https://www.postgresql.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/v2.18.0/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" title="PostgreSQL" width="32" height="32"></a>
+    <a href="https://neon.com/"><img src="images/neon.svg" alt="Neon Postgres" title="Neon Postgres" width="32" height="32"></a>
+  </td></tr>
+</table>
 
 ## Socials
 
-<p align="left">
-  <a href="https://www.github.com/wikiepeidia" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/github.svg" width="32" height="32" alt="GitHub" title="GitHub" /></a>
-  <a href="https://www.gitlab.com/wikiepeidia" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/gitlab.svg" width="32" height="32" alt="GitLab" title="GitLab" /></a>
-  <a href="https://www.x.com/wikiepeidia" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/twitter.svg" width="32" height="32" alt="Twitter" title="Twitter" /></a>
-  <a href="https://www.threads.net/@pham.theminh" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/threads.svg" width="32" height="32" alt="Threads" title="Threads" /></a>
-  <a href="https://www.twitch.tv/wikiepeidia" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/twitch.svg" width="32" height="32" alt="Twitch" title="Twitch" /></a>
-  <a href="https://www.youtube.com/@wikiepeidia" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/youtube.svg" width="32" height="32" alt="YouTube" title="YouTube" /></a>
-  <a href="https://discord.com/users/wikiepeidia" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/discord.svg" width="32" height="32" alt="Discord" title="Discord" /></a>
-  <a href="https://www.facebook.com/phamtheminh.intelcorei9" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/socials/facebook.svg" width="32" height="32" alt="Facebook" title="Facebook" /></a>
+<p>
+  <a href="https://www.github.com/wikiepeidia"><img src="images/social/github.svg" alt="GitHub" title="GitHub" width="32" height="32"></a>
+  <a href="https://www.gitlab.com/wikiepeidia"><img src="images/social/gitlab.svg" alt="GitLab" title="GitLab" width="32" height="32"></a>
+  <a href="https://www.x.com/wikiepeidia"><img src="images/social/x.svg" alt="X" title="X" width="32" height="32"></a>
+  <a href="https://www.threads.net/@pham.theminh"><img src="images/social/threads.svg" alt="Threads" title="Threads" width="32" height="32"></a>
+  <a href="https://www.twitch.tv/wikiepeidia"><img src="images/social/twitch.svg" alt="Twitch" title="Twitch" width="32" height="32"></a>
+  <a href="https://www.youtube.com/@wikiepeidia"><img src="images/social/youtube.svg" alt="YouTube" title="YouTube" width="32" height="32"></a>
+  <a href="https://discord.com/users/wikiepeidia"><img src="images/social/discord.svg" alt="Discord" title="Discord" width="32" height="32"></a>
+  <a href="https://www.facebook.com/phamtheminh.intelcorei9"><img src="images/social/facebook.svg" alt="Facebook" title="Facebook" width="32" height="32"></a>
 </p>
 
 ## Support Me
 
-<a href="https://www.buymeacoffee.com/wikiepeidia">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="150" alt="Buy Me A Coffee"/>
-</a>
-
-[![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/wikiepeidia)
-<br/>
-
-**TechComBank:**
-<img src="images/bank.jpg?v=1" width="300" alt="Friend's Image">
+<table>
+  <tr>
+    <th>Support online</th>
+    <th>Bank transfer</th>
+  </tr>
+  <tr>
+    <td align="center" valign="middle">
+      <p><a href="https://www.buymeacoffee.com/wikiepeidia"><img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&amp;logo=buymeacoffee&amp;logoColor=black" alt="Buy me a coffee" height="32"></a></p>
+      <a href="https://patreon.com/wikiepeidia"><img src="https://img.shields.io/badge/Join_on_Patreon-B83B31?style=for-the-badge&amp;logo=patreon&amp;logoColor=white" alt="Join me on Patreon" height="32"></a>
+    </td>
+    <td align="center">
+      <a href="images/bank.jpg"><img src="images/bank.jpg" width="215" alt="Techcombank transfer QR code for Pham The Minh"></a><br>
+      <sub>Scan to transfer · Tap to enlarge</sub>
+    </td>
+  </tr>
+</table>

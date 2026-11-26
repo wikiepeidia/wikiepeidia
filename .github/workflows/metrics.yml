@@ -23,12 +23,24 @@ jobs:
       - name: Overview, contribution calendar, and languages
         uses: lowlighter/metrics@v3.34
         with:
+          # v3.34's prebuilt image selector misclassifies the release as beta.
+          use_prebuilt_image: 'no'
           token: ${{ secrets.METRICS_TOKEN }}
           output_action: none
           filename: images/metrics-overview.svg
           config_timezone: Asia/Ho_Chi_Minh
           base: header, activity, community, repositories
           base_indepth: 'yes'
+          extras_js: |
+            for (const field of document.querySelectorAll("div.field")) {
+              if (/^Prefers\s+.+\s+license$/i.test(field.textContent.trim())) field.remove()
+            }
+          plugin_followup: 'yes'
+          plugin_followup_sections: repositories
+          plugin_followup_indepth: 'yes'
+          plugin_wakatime: ${{ secrets.WAKATIME_API_KEY != '' && 'yes' || 'no' }}
+          plugin_wakatime_token: ${{ secrets.WAKATIME_API_KEY }}
+          plugin_wakatime_days: '7'
           plugin_isocalendar: 'yes'
           plugin_isocalendar_duration: full-year
           plugin_languages: 'yes'

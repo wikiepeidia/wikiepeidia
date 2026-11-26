@@ -1,11 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 221" width="480" height="221">
-<style>text{font:14px system-ui,sans-serif;fill:#24292f}.heading{font-weight:650;fill:#0969da}@media(prefers-color-scheme:dark){text{fill:#e6edf3}.heading{fill:#58a6ff}}</style>
-<text class="heading" x="12" y="23">Pushes in the latest 100 public events</text>
-<text x="12" y="50"><title>Mo 0   Tu 1   We 6   Th 1   Fr 4   Sa 1   Su 2</title>Mo 0   Tu 1   We 6   Th 1   Fr 4   Sa 1   Su 2</text>
-<text x="12" y="74"><title>26 Nov · Review · ANSER-Logistics/ANSER-logistics-body</title>26 Nov · Review · ANSER-Logistics/ANSER-logistics-body</text>
-<text x="12" y="98"><title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</text>
-<text x="12" y="122"><title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</text>
-<text x="12" y="146"><title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</text>
-<text x="12" y="170"><title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</title>26 Nov · Review · ANSER-Logistics/ANSER_AI_Logistics</text>
-<text x="12" y="194"><title>26 Nov · PR · ANSER-Logistics/ANSER_AI_Logistics</title>26 Nov · PR · ANSER-Logistics/ANSER_AI_Logistics</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="592" viewBox="0 0 480 592" role="img"><title>Pushes by weekday and recent activity</title>
+<style>
+text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
+.heading { font-size: 21px; font-weight: 650 }
+.name { font-size: 17px; font-weight: 600 }
+.meta { font-size: 14px; fill: #59636e }
+.bar { fill: #1f883d }
+.rule { stroke: #d1d9e0 }
+@media (prefers-color-scheme: dark) {
+  text { fill: #f0f6fc } .meta { fill: #a3adb7 }
+  .bar { fill: #3fb950 } .rule { stroke: #3d444d }
+}
+</style>
+<text x="16" y="32" class="heading" text-anchor="start">Pushes by weekday</text>
+<text x="16" y="56" class="meta" text-anchor="start">Latest 100 public events · UTC+7</text>
+<path class="rule" d="M16 152 H464"/>
+<rect class="bar" x="35" y="152" width="26" height="0" rx="3"/>
+<text x="48" y="145" class="" text-anchor="middle">0</text>
+<text x="48" y="173" class="meta" text-anchor="middle">Mon</text>
+<rect class="bar" x="99" y="141" width="26" height="11" rx="3"/>
+<text x="112" y="134" class="" text-anchor="middle">1</text>
+<text x="112" y="173" class="meta" text-anchor="middle">Tue</text>
+<rect class="bar" x="163" y="85" width="26" height="67" rx="3"/>
+<text x="176" y="78" class="" text-anchor="middle">6</text>
+<text x="176" y="173" class="meta" text-anchor="middle">Wed</text>
+<rect class="bar" x="227" y="141" width="26" height="11" rx="3"/>
+<text x="240" y="134" class="" text-anchor="middle">1</text>
+<text x="240" y="173" class="meta" text-anchor="middle">Thu</text>
+<rect class="bar" x="291" y="107" width="26" height="45" rx="3"/>
+<text x="304" y="100" class="" text-anchor="middle">4</text>
+<text x="304" y="173" class="meta" text-anchor="middle">Fri</text>
+<rect class="bar" x="355" y="141" width="26" height="11" rx="3"/>
+<text x="368" y="134" class="" text-anchor="middle">1</text>
+<text x="368" y="173" class="meta" text-anchor="middle">Sat</text>
+<rect class="bar" x="419" y="130" width="26" height="22" rx="3"/>
+<text x="432" y="123" class="" text-anchor="middle">2</text>
+<text x="432" y="173" class="meta" text-anchor="middle">Sun</text>
+<text x="16" y="218" class="heading" text-anchor="start">Recent activity</text>
+<text x="16" y="252" class="name" text-anchor="start">ANSER-logistics-body</text>
+<text x="464" y="252" class="meta" text-anchor="end">26 Nov</text>
+<text x="16" y="273" class="meta" text-anchor="start">ANSER-Logistics · 1 review</text>
+<path class="rule" d="M16 284 H464"/>
+<text x="16" y="310" class="name" text-anchor="start">ANSER_AI_Logistics</text>
+<text x="464" y="310" class="meta" text-anchor="end">26 Nov</text>
+<text x="16" y="331" class="meta" text-anchor="start">ANSER-Logistics · 4 reviews</text>
+<path class="rule" d="M16 342 H464"/>
+<text x="16" y="368" class="name" text-anchor="start">ANSER_AI_Logistics</text>
+<text x="464" y="368" class="meta" text-anchor="end">26 Nov</text>
+<text x="16" y="389" class="meta" text-anchor="start">ANSER-Logistics · 1 PR event</text>
+<path class="rule" d="M16 400 H464"/>
+<text x="16" y="426" class="name" text-anchor="start">ANSER_AI_Logistics</text>
+<text x="464" y="426" class="meta" text-anchor="end">25 Nov</text>
+<text x="16" y="447" class="meta" text-anchor="start">ANSER-Logistics · 2 issue events</text>
+<path class="rule" d="M16 458 H464"/>
+<text x="16" y="484" class="name" text-anchor="start">ANSER_AI_Logistics</text>
+<text x="464" y="484" class="meta" text-anchor="end">24 Nov</text>
+<text x="16" y="505" class="meta" text-anchor="start">ANSER-Logistics · 1 push</text>
+<path class="rule" d="M16 516 H464"/>
+<text x="16" y="542" class="name" text-anchor="start">ANSER_AI_Logistics</text>
+<text x="464" y="542" class="meta" text-anchor="end">24 Nov</text>
+<text x="16" y="563" class="meta" text-anchor="start">ANSER-Logistics · 5 reviews</text>
+<path class="rule" d="M16 574 H464"/>
 </svg>
