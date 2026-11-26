@@ -20,10 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Load verified Metrics image
+        run: |
+          image=ghcr.io/lowlighter/metrics@sha256:b8013996b12be3ea049fad2e18db6b31083575a197e43ed63a690a094b9164fb
+          docker pull "$image"
+          docker tag "$image" metrics:3.34.0
+
       - name: Overview, contribution calendar, and languages
         uses: lowlighter/metrics@v3.34
         with:
-          # v3.34's prebuilt image selector misclassifies the release as beta.
+          # The action reuses the local metrics:3.34.0 image when this is disabled.
           use_prebuilt_image: 'no'
           token: ${{ secrets.METRICS_TOKEN }}
           output_action: none
