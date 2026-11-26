@@ -1,0 +1,57 @@
+name: Generate GitHub profile metrics
+
+on:
+  schedule:
+    - cron: '23 0 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/metrics.yml]
+
+concurrency:
+  group: profile-metrics
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Overview, contribution calendar, and languages
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          committer_branch: main
+          filename: images/metrics-overview.svg
+          config_timezone: Asia/Ho_Chi_Minh
+          output_condition: data-changed
+          base: header, activity, community, repositories
+          base_indepth: 'yes'
+          plugin_isocalendar: 'yes'
+          plugin_isocalendar_duration: full-year
+          plugin_languages: 'yes'
+          plugin_languages_ignored: Jupyter Notebook
+          plugin_languages_details: percentage
+
+      - name: Coding habits, recent activity, and starred repositories
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          committer_branch: main
+          filename: images/metrics-activity.svg
+          config_timezone: Asia/Ho_Chi_Minh
+          output_condition: data-changed
+          base: ''
+          plugin_habits: 'yes'
+          plugin_habits_charts: 'yes'
+          plugin_habits_days: '30'
+          plugin_activity: 'yes'
+          plugin_activity_days: '90'
+          plugin_activity_filter: push, pr, issue, review, release
+          plugin_activity_limit: '6'
+          plugin_activity_skipped: wikiepeidia/wikiepeidia
+          plugin_activity_timestamps: 'yes'
+          plugin_activity_visibility: public
+          plugin_stars: 'yes'
+          plugin_stars_limit: '4'
