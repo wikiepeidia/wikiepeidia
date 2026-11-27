@@ -29,7 +29,8 @@ Here are some ideas to get you started
 <img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-activity.svg" alt="GitHub README rank, current streak, and longest streak">
 </td>
 <td width="50%" valign="top">
-<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-wakatime.svg" alt="All-time WakaTime coding activity and AI usage">
+<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-wakatime.svg" alt="All-time WakaTime coding activity and AI usage"><br>
+<sub><a href="https://www.exchangerate-api.com">Rates by Exchange Rate API</a></sub>
 </td>
 </tr>
 <tr><td colspan="2" align="center">

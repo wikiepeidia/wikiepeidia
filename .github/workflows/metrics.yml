@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/workflows/metrics.yml, .github/scripts/profile_activity.py]
+    paths: [.github/workflows/metrics.yml, .github/scripts/profile_activity.py, .github/scripts/repository_stats.py]
 
 concurrency:
   group: profile-metrics
@@ -17,8 +17,23 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: write
+      packages: read
     steps:
       - uses: actions/checkout@v4
+
+      - name: Count releases, public packages, and recognized licenses
+        id: repositories
+        env:
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
+          PACKAGES_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/repository_stats.py
+
+      - name: Render rank, streak, and WakaTime
+        id: activity
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WAKATIME_TOKEN: ${{ secrets.WAKATIME_OAUTH_TOKEN }}
+        run: python3 .github/scripts/profile_activity.py
 
       - name: Load verified Metrics image
         run: |
@@ -41,9 +56,19 @@ jobs:
           repositories: '500'
           repositories_batch: '25'
           extras_js: |
+            const stats = ${{ steps.repositories.outputs.stats }}
             for (const field of document.querySelectorAll("div.field")) {
-              if (/^Contributed to\s+[\d,]+\s+repositor(?:y|ies)$/i.test(field.textContent.trim())) field.append(" recently")
-              if (/^Prefers\s+.+\s+license$/i.test(field.textContent.trim())) field.remove()
+              const text = field.textContent.trim()
+              let replacement
+              if (/^Contributed to\s+[\d,]+\s+repositor(?:y|ies)$/i.test(text))
+                replacement = "Contributed to ${{ steps.activity.outputs.repo_count }} public repositories"
+              if (/^Prefers .+ license$|^No license preference$/i.test(text))
+                replacement = stats.license ? `Top license: ${stats.license}` : "No recognized license"
+              if (/^[\d,.]+ releases?$/i.test(text))
+                replacement = `${stats.releases} Release${stats.releases === 1 ? "" : "s"}`
+              if (/^[\d,.]+ packages?$/i.test(text))
+                replacement = stats.packages === null ? "Packages unavailable" : `${stats.packages} public package${stats.packages === 1 ? "" : "s"}`
+              if (replacement) field.replaceChildren(field.querySelector("svg"), document.createTextNode(" " + replacement))
             }
           plugin_followup: 'yes'
           plugin_followup_sections: repositories, user
@@ -53,12 +78,6 @@ jobs:
           plugin_languages: 'yes'
           plugin_languages_ignored: Jupyter Notebook
           plugin_languages_details: percentage
-
-      - name: Render public activity
-        env:
-          GH_TOKEN: ${{ github.token }}
-          WAKATIME_TOKEN: ${{ secrets.WAKATIME_OAUTH_TOKEN }}
-        run: python3 .github/scripts/profile_activity.py
 
       - name: Collect rendered cards
         run: |
