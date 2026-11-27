@@ -205,7 +205,7 @@ def summary_stats(days):
                           for name, seconds in counts.most_common()]
     if active:
         seconds, date = max(active)
-        stats["best_day"] = {"date": date, "text": duration(seconds)}
+        stats["best_day"] = {"date": date, "text": duration(seconds), "total_seconds": seconds}
         stats["human_readable_daily_average_including_other_language"] = duration(
             sum(seconds for seconds, _ in active) / len(active))
     return stats
@@ -231,17 +231,27 @@ def render_wakatime():
             lagging = observed > lifetime_seconds
             caption = " or more tracked" if lagging else " tracked since joining"
             body = banner("WAKATIME  ·  ALL TIME", duration(max(lifetime_seconds, observed)) + caption)
+        period = None
         if observed and (aggregate < observed or not stats.get("languages")):
-            # A new account can have daily data before lifetime charts are computed.
             stats = summary_stats(days)
-            dates = sorted(day["range"]["date"] for day in days if day["grand_total"]["total_seconds"])
-            body.append(label(16, y, f"Recorded breakdown · {dates[0]} to {dates[-1]}", "meta"))
-            y += 26
-        elif not aggregate:
+            first = min(day["range"]["date"] for day in days if day["grand_total"]["total_seconds"])
+            last = max(day["range"]["date"] for day in days)
+            period = (date.fromisoformat(first), date.fromisoformat(last))
+        elif aggregate:
+            if stats.get("start") and stats.get("end"):
+                local = timezone(timedelta(hours=7))
+                period = tuple(datetime.fromisoformat(stats[key].replace("Z", "+00:00")).astimezone(local).date()
+                               for key in ("start", "end"))
+            # Today's summary can beat a record before WakaTime refreshes its lifetime cache.
+            recent_best = summary_stats(days).get("best_day")
+            cached_best = stats.get("best_day") or {}
+            if recent_best and recent_best["total_seconds"] > cached_best.get("total_seconds", float("inf")):
+                stats["best_day"] = recent_best
+        else:
             body.append(label(16, y, "Waiting for recorded coding activity.", "meta"))
             stats = {}
             y += 24
-        y = waka_breakdown(body, y, stats)
+        y = waka_breakdown(body, y, stats, period)
     save("metrics-wakatime.svg", title, body, y+20)
 
 
@@ -261,8 +271,13 @@ def spend_vnd(usd):
     return "Unavailable"
 
 
-def waka_breakdown(body, y, stats):
+def waka_breakdown(body, y, stats, period=None):
     metrics = []
+    if period:
+        metrics.append(("Recorded breakdown", f"{period[0]:%d/%m/%Y} –", f"{period[1]:%d/%m/%Y}"))
+    best = stats.get("best_day") or {}
+    if best.get("date"):
+        metrics.append(("Best day", f"{date.fromisoformat(best['date']):%d/%m/%Y}", best.get("text")))
     for key, caption in (("human_readable_daily_average_including_other_language", "Daily average"),
                          ("ai_prompt_events_total", "AI prompts"), ("ai_sessions", "AI sessions"),
                          ("ai_input_tokens", "Input tokens"), ("ai_output_tokens", "Output tokens"),
@@ -274,17 +289,17 @@ def waka_breakdown(body, y, stats):
             value = spend_vnd(value)
         elif isinstance(value, int):
             value = f"{value:,}"
-        metrics.append((caption, value))
-    for index, (caption, value) in enumerate(metrics):
-        x = 18 + (index % 2) * 226
-        top = y + (index // 2) * 57
-        body.extend([f'<rect x="{x}" y="{top-12}" width="3" height="35" rx="1.5" fill="#8175d6"/>',
-                     label(x+12, top, caption, "meta"), label(x+12, top+23, value, "name number")])
-    y += ((len(metrics)+1)//2)*57
-    best = stats.get("best_day") or {}
-    if best.get("date"):
-        body.append(label(16, y, f"Best day · {best['date']} · {best.get('text', '')}", "meta"))
-        y += 24
+        metrics.append((caption, value, None))
+    for index in range(0, len(metrics), 2):
+        row = metrics[index:index+2]
+        height = 54 if any(detail for _, _, detail in row) else 35
+        for col, (caption, value, detail) in enumerate(row):
+            x = 18 + col * 226
+            body.extend([f'<rect x="{x}" y="{y-12}" width="3" height="{height}" rx="1.5" fill="#8175d6"/>',
+                         label(x+12, y, caption, "meta"), label(x+12, y+23, value, "name number")])
+            if detail:
+                body.append(label(x+12, y+42, detail, "meta"))
+        y += height + 22
 
     sections = []
     if all(stats.get(k) is not None for k in ("ai_additions","ai_deletions","human_additions","human_deletions")):
