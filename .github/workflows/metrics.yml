@@ -67,7 +67,7 @@ jobs:
               if (/^[\d,.]+ releases?$/i.test(text))
                 replacement = `${stats.releases} Release${stats.releases === 1 ? "" : "s"}`
               if (/^[\d,.]+ packages?$/i.test(text))
-                replacement = stats.packages === null ? "Packages unavailable" : `${stats.packages} public package${stats.packages === 1 ? "" : "s"}`
+                replacement = `${stats.packages} ${stats.containers_checked ? "public" : "registry"} package${stats.packages === 1 ? "" : "s"}`
               if (replacement) field.replaceChildren(field.querySelector("svg"), document.createTextNode(" " + replacement))
             }
           plugin_followup: 'yes'
