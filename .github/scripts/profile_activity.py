@@ -4,7 +4,7 @@ import json
 import os
 import subprocess
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
 from urllib.error import URLError
@@ -54,21 +54,97 @@ def public_contributions(owner):
         "{ repository { nameWithOwner isPrivate } contributions { totalCount } }"
         for label, field in fields.items()
     )
-    query = ("query($login:String!) { user(login:$login) { contributionsCollection { "
-             + selections + " contributionCalendar { weeks { contributionDays { date weekday contributionCount color } } } } } }")
-    result = json.loads(subprocess.check_output(
-        ["gh", "api", "graphql", "-f", f"query={query}", "-f", f"login={owner}"]))
+    query = ("query($login:String!) { user(login:$login) { createdAt followers { totalCount } "
+             "pullRequests { totalCount } issues { totalCount } contributionsCollection { "
+             + selections + " totalPullRequestReviewContributions } } }")
+    user = graphql_user(owner, query)
     counts = defaultdict(Counter)
-    collection = result["data"]["user"]["contributionsCollection"]
-    weeks = collection.pop("contributionCalendar")["weeks"]
-    for kind, rows in collection.items():
-        for row in rows:
+    collection = user["contributionsCollection"]
+    for kind in fields:
+        for row in collection[kind]:
             if not row["repository"]["isPrivate"]:
                 counts[row["repository"]["nameWithOwner"]][kind] = row["contributions"]["totalCount"]
-    return counts, weeks
+    commits = json.loads(subprocess.check_output(
+        ["gh", "api", f"search/commits?q=author:{owner}&per_page=1"]))
+    if commits.get("incomplete_results"):
+        raise RuntimeError("GitHub commit search returned incomplete results")
+    repos = json.loads(subprocess.check_output(
+        ["gh", "api", "--paginate", "--slurp", f"users/{owner}/repos?type=owner&per_page=100"]))
+    stars = sum(repo["stargazers_count"] for page in repos for repo in page if not repo["private"])
+    rank = readme_rank(commits["total_count"], user["pullRequests"]["totalCount"],
+                      user["issues"]["totalCount"], collection["totalPullRequestReviewContributions"],
+                      stars, user["followers"]["totalCount"])
+    return counts, date.fromisoformat(user["createdAt"][:10]), rank
 
 
-def render_activity(events, contributions, weeks, profile_repo):
+def graphql_user(owner, query, *variables):
+    command = ["gh", "api", "graphql", "-f", f"query={query}", "-f", f"login={owner}"]
+    for variable in variables:
+        command.extend(["-f", variable])
+    return json.loads(subprocess.check_output(command))["data"]["user"]
+
+
+def readme_rank(commits, prs, issues, reviews, stars, followers):
+    # github-readme-stats/src/calculateRank.js, include_all_commits=true.
+    weighted = sum(weight * (1 - 2 ** (-count / median)) for count, median, weight in
+                   [(commits, 1000, 2), (prs, 50, 3), (issues, 25, 1), (reviews, 2, 1)])
+    weighted += 4 * stars / (stars + 50) + followers / (followers + 10)
+    score = 100 * (1 - weighted / 12)
+    thresholds = [(1, "S"), (12.5, "A+"), (25, "A"), (37.5, "A-"), (50, "B+"),
+                  (62.5, "B"), (75, "B-"), (87.5, "C+"), (100, "C")]
+    return next(grade for limit, grade in thresholds if score <= limit)
+
+
+def daily_history(owner, joined, today):
+    query = """query($login:String!, $from:DateTime!, $to:DateTime!) {
+      user(login:$login) { contributionsCollection(from:$from, to:$to) {
+        contributionCalendar { weeks { contributionDays { date contributionCount color } } }
+      } }
+    }"""
+    history = {}
+    for year in range(joined.year, today.year + 1):
+        start = max(joined, date(year, 1, 1))
+        end = min(today, date(year, 12, 31))
+        user = graphql_user(owner, query, f"from={start}T00:00:00Z", f"to={end}T23:59:59Z")
+        for week in user["contributionsCollection"]["contributionCalendar"]["weeks"]:
+            for day in week["contributionDays"]:
+                when = date.fromisoformat(day["date"])
+                if start <= when <= end:
+                    history[when] = day
+    return history
+
+
+def lifetime_panel(history, joined, today, rank):
+    total = run = current = longest = 0
+    body = []
+    for offset in range((today - joined).days + 1):
+        day = joined + timedelta(days=offset)
+        count = history.get(day, {}).get("contributionCount", 0)
+        total += count
+        run = run + 1 if count else 0
+        longest = max(longest, run)
+        if day == today - timedelta(days=1) or (day == today and count):
+            current = run
+    body.extend([label(16, 32, "Lifetime contributions", "heading"),
+                 label(16, 56, f"{total:,} contributions since {joined:%b %Y}", "meta"),
+                 label(16, 84, f"README rank: {rank}    ·    Streak: {current}d    ·    Best: {longest}d", "name")])
+    y = 106
+    for year in range(today.year, joined.year-1, -1):
+        body.append(label(16, y+27, year, "meta"))
+        jan = date(year, 1, 1)
+        sunday_offset = (jan.weekday()+1) % 7
+        for day, entry in history.items():
+            if day.year != year:
+                continue
+            week, weekday = divmod((day-jan).days + sunday_offset, 7)
+            body.append(f'<rect x="{62 + week*7.5}" y="{y + weekday*7}" width="6.5" height="6" '
+                        f'rx="1" fill="{entry["color"]}"><title>{day}: '
+                        f'{entry["contributionCount"]} contributions</title></rect>')
+        y += 60
+    return body, y
+
+
+def render_activity(events, contributions, history, joined, today, rank, profile_repo):
     recent = Counter()
     created_repos = set()
     for event in sorted(events, key=lambda item: item["created_at"], reverse=True):
@@ -78,28 +154,10 @@ def render_activity(events, contributions, weeks, profile_repo):
         if kind == "CreateEvent" and event["payload"].get("ref_type") == "repository":
             created_repos.add(repo)
 
-    weeks = weeks[-26:]
-    total = sum(day["contributionCount"] for week in weeks for day in week["contributionDays"])
-    body = [label(16, 32, "Daily contributions", "heading"),
-            label(16, 56, f"{total:,} contributions · last {len(weeks)} calendar weeks", "meta")]
-    previous_month = None
-    for column, week in enumerate(weeks):
-        days = week["contributionDays"]
-        x = 48 + column * 16
-        month = datetime.fromisoformat(days[0]["date"]).strftime("%b")
-        if month != previous_month and column < len(weeks)-1:
-            body.append(label(x, 78, month, "meta"))
-        previous_month = month
-        for day in days:
-            y = 84 + day["weekday"] * 15
-            body.append(f'<rect x="{x}" y="{y}" width="13" height="13" rx="2" fill="{day["color"]}">'
-                        f'<title>{day["date"]}: {day["contributionCount"]} contributions</title></rect>')
-    for row, weekday in ((1, "M"), (3, "W"), (5, "F")):
-        body.append(label(20, 95 + row * 15, weekday, "meta"))
-
-    body.append(label(16, 218, "Profile and recent repositories", "heading"))
-    body.append(label(16, 243, "Past year’s contributions · recent public event counts", "meta"))
-    y = 280
+    body, y = lifetime_panel(history, joined, today, rank)
+    body.append(label(16, y+20, "Profile and recent repositories", "heading"))
+    body.append(label(16, y+45, "Past year’s contributions · recent public event counts", "meta"))
+    y += 82
     # First appearance records the newest event for each distinct repository.
     repos = [profile_repo, *[repo for repo in recent if repo.casefold() != profile_repo.casefold()][:5]]
     for repo in repos:
@@ -264,6 +322,8 @@ owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
 pages = json.loads(subprocess.check_output(
     ["gh", "api", "--paginate", "--slurp", f"users/{owner}/events/public?per_page=100"]))
 events = {event["id"]: event for page in pages for event in page}
-contributions, weeks = public_contributions(owner)
-render_activity(events.values(), contributions, weeks, f"{owner}/{owner}")
+contributions, joined, rank = public_contributions(owner)
+today = datetime.now(timezone(timedelta(hours=7))).date()
+history = daily_history(owner, joined, today)
+render_activity(events.values(), contributions, history, joined, today, rank, f"{owner}/{owner}")
 render_wakatime()
