@@ -1,8 +1,8 @@
-name: Generate daily AI quote
+name: Generate AI quote
 
 on:
   schedule:
-    - cron: '13 0 * * *'
+    - cron: '41 */6 * * *'
   workflow_dispatch:
   push:
     branches: [main]
@@ -21,17 +21,32 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate AI quote card
+        id: quote
         env:
           GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python3 .github/scripts/ai_quote.py
 
+      - name: Check whether an existing quote card can be preserved
+        id: publish_gate
+        run: |
+          if [ "${{ steps.quote.outputs.from_api }}" = "true" ]; then
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          elif git ls-remote --exit-code --heads origin ai-quote-output >/dev/null 2>&1; then
+            echo "::warning::Both AI quote APIs failed; keeping existing ai-quote-output card."
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Collect rendered quote card
+        if: steps.publish_gate.outputs.should_publish == 'true'
         run: |
           mkdir -p publish/images
           cp images/ai-quote.svg publish/images/
 
       - name: Publish AI quote card
+        if: steps.publish_gate.outputs.should_publish == 'true'
         uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: ai-quote-output

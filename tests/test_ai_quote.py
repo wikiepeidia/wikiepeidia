@@ -102,8 +102,9 @@ class TestProviderCallsAndFailover(unittest.TestCase):
         with patch.dict(os.environ, {"GROK_API_KEY": "gsk_test_key"}, clear=False), \
              patch.object(aq, "urlopen", side_effect=fake_urlopen):
             os.environ.pop("OPENROUTER_API_KEY", None)
-            quote, author = aq.fetch_ai_quote()
+            quote, author, from_api = aq.fetch_ai_quote()
 
+        self.assertTrue(from_api)
         self.assertEqual((quote, author), ("My weights are heavy.", "I am an AI - GPT OSS 120B"))
         self.assertEqual(captured["url"], aq.GROQ_URL)
         self.assertEqual(captured["auth"], "Bearer gsk_test_key")
@@ -130,8 +131,9 @@ class TestProviderCallsAndFailover(unittest.TestCase):
              patch.object(aq, "urlopen", side_effect=fake_urlopen):
             os.environ.pop("GROK_API_KEY", None)
             os.environ.pop("GROQ_API_KEY", None)
-            quote, author = aq.fetch_ai_quote()
+            quote, author, from_api = aq.fetch_ai_quote()
 
+        self.assertTrue(from_api)
         self.assertEqual(quote, "Free tokens taste sweetest.")
         self.assertEqual(author, "I am an AI - Gemma 3 27B It")
         self.assertEqual(captured["url"], aq.OPENROUTER_URL)
@@ -157,8 +159,9 @@ class TestProviderCallsAndFailover(unittest.TestCase):
         with patch.dict(os.environ, {"GROK_API_KEY": secret1, "OPENROUTER_API_KEY": secret2}), \
              patch.object(aq, "urlopen", side_effect=[err401, ok_openrouter]), \
              contextlib.redirect_stdout(buf):
-            quote, author = aq.fetch_ai_quote(rng=_NoShuffleRng(0))
+            quote, author, from_api = aq.fetch_ai_quote(rng=_NoShuffleRng(0))
 
+        self.assertTrue(from_api)
         self.assertEqual((quote, author), ("Failover saved my README.", "Qwen 3 Coder"))
         self.assertIn("HTTP 401", buf.getvalue())
         self.assertNotIn(secret1, buf.getvalue())
@@ -182,7 +185,8 @@ class TestProviderCallsAndFailover(unittest.TestCase):
             with patch.dict(os.environ, {"GROK_API_KEY": secret1, "OPENROUTER_API_KEY": secret2}), \
                  patch.object(aq, "urlopen", side_effect=effect * 3), \
                  contextlib.redirect_stdout(buf):
-                quote, author = aq.fetch_ai_quote(rng=random.Random(0))
+                quote, author, from_api = aq.fetch_ai_quote(rng=random.Random(0))
+            self.assertFalse(from_api)
             self.assertIn((quote, author), aq.FALLBACK_QUOTES)
             self.assertNotIn(secret1, buf.getvalue())
             self.assertNotIn(secret2, buf.getvalue())
@@ -191,7 +195,8 @@ class TestProviderCallsAndFailover(unittest.TestCase):
         with patch.dict(os.environ, {"GROK_API_KEY": "   ", "OPENROUTER_API_KEY": ""}, clear=False), \
              contextlib.redirect_stdout(io.StringIO()):
             os.environ.pop("GROQ_API_KEY", None)
-            quote, author = aq.fetch_ai_quote(rng=random.Random(1))
+            quote, author, from_api = aq.fetch_ai_quote(rng=random.Random(1))
+        self.assertFalse(from_api)
         self.assertIn((quote, author), aq.FALLBACK_QUOTES)
 
 
@@ -212,12 +217,14 @@ class TestSvgRenderingAndMain(unittest.TestCase):
             # Capped length ensures bounded height even for huge AI output
             self.assertLessEqual(int(root.attrib["height"]), 220)
 
-    def test_main_renders_ai_quote_svg_in_images_dir(self):
+    def test_main_renders_ai_quote_svg_and_sets_github_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             cwd = os.getcwd()
             os.chdir(tmp)
+            gh_out = Path(tmp) / "gh_output.txt"
             try:
-                with patch.object(aq, "fetch_ai_quote", return_value=("404 Sleep Not Found", "I am an AI - GPT OSS 120B")):
+                with patch.dict(os.environ, {"GITHUB_OUTPUT": str(gh_out)}), \
+                     patch.object(aq, "fetch_ai_quote", return_value=("404 Sleep Not Found", "I am an AI - GPT OSS 120B", True)):
                     aq.main()
                 svg_path = Path("images/ai-quote.svg")
                 self.assertTrue(svg_path.exists())
@@ -225,6 +232,13 @@ class TestSvgRenderingAndMain(unittest.TestCase):
                 svg_text = svg_path.read_text(encoding="utf8")
                 self.assertIn("404 Sleep Not Found", svg_text)
                 self.assertIn("- I am an AI - GPT OSS 120B", svg_text)
+                self.assertEqual(gh_out.read_text(encoding="utf8").strip(), "from_api=true")
+
+                gh_out.write_text("", encoding="utf8")
+                with patch.dict(os.environ, {"GITHUB_OUTPUT": str(gh_out)}), \
+                     patch.object(aq, "fetch_ai_quote", return_value=("Fallback", "Bot", False)):
+                    aq.main()
+                self.assertEqual(gh_out.read_text(encoding="utf8").strip(), "from_api=false")
             finally:
                 os.chdir(cwd)
 

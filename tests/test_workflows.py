@@ -79,11 +79,12 @@ class TestWorkflows(unittest.TestCase):
     def test_ai_quote_workflow_config_and_secrets(self):
         wf = _load_workflow("ai-quote.yml")
         raw = (WORKFLOWS_DIR / "ai-quote.yml").read_text(encoding="utf8")
-        self.assertEqual(wf["on"]["schedule"][0]["cron"], "13 0 * * *")
+        self.assertEqual(wf["on"]["schedule"][0]["cron"], "41 */6 * * *")
         self.assertIn("GROK_API_KEY", raw)
         self.assertIn("OPENROUTER_API_KEY", raw)
         self.assertIn("ai-quote.svg", raw)
         self.assertIn("ai-quote-output", raw)
+        self.assertIn("should_publish", raw)
         readme = README_PATH.read_text(encoding="utf8")
         self.assertIn("ai-quote-output/images/ai-quote.svg", readme)
 

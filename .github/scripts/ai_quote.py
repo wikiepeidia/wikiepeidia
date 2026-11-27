@@ -188,7 +188,8 @@ def fetch_ai_quote(rng=None):
 
     for name, url, key, model, extra in candidates:
         try:
-            return call_provider(name, url, key, model, extra)
+            quote, author = call_provider(name, url, key, model, extra)
+            return quote, author, True
         except HTTPError as error:
             hint = " — key may be expired" if error.code in (401, 403) else ""
             print(f"::warning::AI quote provider {name} failed (HTTP {error.code}{hint}).")
@@ -196,7 +197,8 @@ def fetch_ai_quote(rng=None):
             print(f"::warning::AI quote provider {name} failed ({type(error).__name__}).")
 
     print("::warning::All AI quote providers unavailable; using built-in fallback quote.")
-    return rng.choice(FALLBACK_QUOTES)
+    quote, author = rng.choice(FALLBACK_QUOTES)
+    return quote, author, False
 
 
 def render_quote_svg(quote, author, output_path=Path("images/ai-quote.svg")):
@@ -244,8 +246,11 @@ def render_quote_svg(quote, author, output_path=Path("images/ai-quote.svg")):
 
 
 def main():
-    quote, author = fetch_ai_quote()
+    quote, author, from_api = fetch_ai_quote()
     render_quote_svg(quote, author)
+    if os.environ.get("GITHUB_OUTPUT"):
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
+            print(f"from_api={'true' if from_api else 'false'}", file=output)
 
 
 if __name__ == "__main__":
