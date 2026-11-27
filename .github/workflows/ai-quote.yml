@@ -1,0 +1,41 @@
+name: Generate daily AI quote
+
+on:
+  schedule:
+    - cron: '13 0 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/ai-quote.yml, .github/scripts/ai_quote.py]
+
+concurrency:
+  group: ai-quote
+
+jobs:
+  quote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate AI quote card
+        env:
+          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python3 .github/scripts/ai_quote.py
+
+      - name: Collect rendered quote card
+        run: |
+          mkdir -p publish/images
+          cp images/ai-quote.svg publish/images/
+
+      - name: Publish AI quote card
+        uses: crazy-max/ghaction-github-pages@v3.1.0
+        with:
+          target_branch: ai-quote-output
+          build_dir: publish
+          keep_history: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -19,6 +19,8 @@ Here are some ideas to get you started
   <img alt="Programming quote" src="https://quotes-github-readme.vercel.app/api?type=horizontal&amp;theme=light" />
 </picture>
 
+<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/ai-quote-output/images/ai-quote.svg" alt="Daily AI-generated programming quote" />
+
 ## GitHub Stats
 
 <table>
@@ -40,9 +42,9 @@ Here are some ideas to get you started
 </td></tr>
 <tr><td colspan="2" align="center">
 <picture>
-  <source srcset="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&amp;bg_color=0d1117&amp;color=9be9a8&amp;line=4c8eda&amp;point=38d252&amp;area=true&amp;hide_border=true" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&amp;bg_color=ffffff&amp;color=000000&amp;line=9be9a8&amp;point=40c463&amp;area=true&amp;hide_border=true" media="(prefers-color-scheme: light)" />
-  <img alt="Activity Graph" src="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&amp;bg_color=ffffff&amp;color=000000&amp;line=9be9a8&amp;point=40c463&amp;area=true&amp;hide_border=true" />
+  <source srcset="https://github-readme-activity-graph.ashutosh-dwivedi0710.workers.dev/graph?username=wikiepeidia&amp;theme=github-dark&amp;area=true&amp;hide_border=true" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://github-readme-activity-graph.ashutosh-dwivedi0710.workers.dev/graph?username=wikiepeidia&amp;theme=github-light&amp;area=true&amp;hide_border=true" media="(prefers-color-scheme: light)" />
+  <img alt="Activity Graph" src="https://github-readme-activity-graph.ashutosh-dwivedi0710.workers.dev/graph?username=wikiepeidia&amp;theme=github-light&amp;area=true&amp;hide_border=true" />
 </picture>
 </td></tr>
 </table>

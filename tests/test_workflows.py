@@ -76,6 +76,17 @@ class TestWorkflows(unittest.TestCase):
         # Supply-chain check: container image must be pinned by immutable sha256 digest
         self.assertRegex(raw, r"ghcr\.io/lowlighter/metrics@sha256:[0-9a-f]{64}")
 
+    def test_ai_quote_workflow_config_and_secrets(self):
+        wf = _load_workflow("ai-quote.yml")
+        raw = (WORKFLOWS_DIR / "ai-quote.yml").read_text(encoding="utf8")
+        self.assertEqual(wf["on"]["schedule"][0]["cron"], "13 0 * * *")
+        self.assertIn("GROK_API_KEY", raw)
+        self.assertIn("OPENROUTER_API_KEY", raw)
+        self.assertIn("ai-quote.svg", raw)
+        self.assertIn("ai-quote-output", raw)
+        readme = README_PATH.read_text(encoding="utf8")
+        self.assertIn("ai-quote-output/images/ai-quote.svg", readme)
+
     @unittest.skipUnless(shutil.which("node"), "Node.js required to execute workflow extras_js")
     def test_metrics_workflow_extras_js_transforms_fields_correctly(self):
         wf = _load_workflow("metrics.yml")
@@ -156,11 +167,10 @@ class TestReadmeIntegrityAndSecurity(unittest.TestCase):
 
     def test_readme_generated_card_urls_match_workflow_branches(self):
         readme = README_PATH.read_text(encoding="utf8")
-        metrics_wf = _load_workflow("metrics.yml")
-        snake_wf = _load_workflow("snake.yml")
 
         publish_branches = set()
-        for wf in (metrics_wf, snake_wf):
+        for wf_path in WORKFLOWS_DIR.glob("*.yml"):
+            wf = _load_workflow(wf_path.name)
             for job in wf["jobs"].values():
                 for step in job.get("steps") or []:
                     target = (step.get("with") or {}).get("target_branch")
