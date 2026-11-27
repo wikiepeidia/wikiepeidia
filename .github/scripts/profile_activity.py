@@ -93,7 +93,6 @@ def readme_rank(commits, prs, issues, reviews, stars, followers):
 def daily_history(owner, joined, today):
     query = """query($login:String!, $from:DateTime!, $to:DateTime!) {
       user(login:$login) { contributionsCollection(from:$from, to:$to) {
-        totalPullRequestReviewContributions
         commits:commitContributionsByRepository(maxRepositories:100){repository{id visibility}}
         issues:issueContributionsByRepository(maxRepositories:100){repository{id visibility}}
         prs:pullRequestContributionsByRepository(maxRepositories:100){repository{id visibility}}
@@ -104,14 +103,12 @@ def daily_history(owner, joined, today):
     }"""
     history = {}
     repositories = set()
-    reviews = 0
     capped = False
     for year in range(joined.year, today.year + 1):
         start = max(joined, date(year, 1, 1))
         end = min(today, date(year, 12, 31))
         user = graphql_user(owner, query, f"from={start}T00:00:00Z", f"to={end}T23:59:59Z")
         collection = user["contributionsCollection"]
-        reviews += collection["totalPullRequestReviewContributions"]
         groups = [collection[key] for key in ("commits", "issues", "prs", "reviews")]
         capped |= any(len(group) == 100 for group in groups) or collection["created"]["pageInfo"]["hasNextPage"]
         for group in [*groups, collection["created"]["nodes"]]:
@@ -122,10 +119,10 @@ def daily_history(owner, joined, today):
                 when = date.fromisoformat(day["date"])
                 if start <= when <= end:
                     history[when] = day["contributionCount"]
-    return history, reviews, f"{len(repositories)}{'+' if capped else ''}"
+    return history, f"{len(repositories)}{'+' if capped else ''}"
 
 
-def render_rank_streak(history, joined, today, rank, reviews):
+def render_rank_streak(history, joined, today, rank):
     total = run = current = longest = 0
     best_end = None
     for offset in range((today - joined).days + 1):
@@ -138,16 +135,15 @@ def render_rank_streak(history, joined, today, rank, reviews):
         if day == today - timedelta(days=1) or (day == today and count):
             current = run
     body = banner("GITHUB README RANK", f"Grade {rank}", "#ffda85")
-    body.append(label(18, 116, f"{total:,} contributions since {joined:%b %Y}", "name"))
-    body.append(label(18, 140, f"{reviews:,} pull request review contributions since {joined:%Y}", "meta"))
+    body.append(label(18, 116, f"{total:,} contributions since {joined.day} {joined:%b %Y}", "name"))
     for index, grade in enumerate(("C", "C+", "B-", "B", "B+", "A-", "A", "A+", "S")):
         x = 18 + index * 50
         active = grade == rank
         fill = 'fill="#864413"' if active else 'class="track"'
-        body.append(f'<rect x="{x}" y="157" width="42" height="30" rx="8" {fill}/>')
-        body.append(label(x+21, 178, grade, "kicker" if active else "number", "middle"))
-    body.append(label(18, 224, "Contribution streak", "heading"))
-    for y, caption, days, color in ((257, "Current", current, "#aa5823"), (290, "Longest", longest, "#c1841b")):
+        body.append(f'<rect x="{x}" y="133" width="42" height="30" rx="8" {fill}/>')
+        body.append(label(x+21, 154, grade, "kicker" if active else "number", "middle"))
+    body.append(label(18, 200, "Contribution streak", "heading"))
+    for y, caption, days, color in ((233, "Current", current, "#aa5823"), (266, "Longest", longest, "#c1841b")):
         body.append(label(18, y, caption))
         body.append(f'<rect class="track" x="109" y="{y-11}" width="245" height="9" rx="4"/>')
         width = 245 * days / max(longest, 1)
@@ -155,8 +151,8 @@ def render_rank_streak(history, joined, today, rank, reviews):
         body.append(label(462, y, f"{days} day" if days == 1 else f"{days} days", "number", "end"))
     if best_end:
         best_start = best_end - timedelta(days=longest - 1)
-        body.append(label(18, 322, f"Best streak  ·  {best_start:%d %b %Y} – {best_end:%d %b %Y}", "meta"))
-    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 343, ("#502820", "#864413"))
+        body.append(label(18, 298, f"Best streak  ·  {best_start:%d %b %Y} – {best_end:%d %b %Y}", "meta"))
+    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 319, ("#502820", "#864413"))
 
 
 def waka_data(endpoint, token):
@@ -330,8 +326,8 @@ def waka_bars(body, y, heading, rows):
 owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
 joined, rank = profile_rank(owner)
 today = datetime.now(timezone(timedelta(hours=7))).date()
-history, reviews, repo_count = daily_history(owner, joined, today)
-render_rank_streak(history, joined, today, rank, reviews)
+history, repo_count = daily_history(owner, joined, today)
+render_rank_streak(history, joined, today, rank)
 if os.environ.get("GITHUB_OUTPUT"):
     with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
         print(f"repo_count={repo_count}", file=output)
