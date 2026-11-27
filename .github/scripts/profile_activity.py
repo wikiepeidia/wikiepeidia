@@ -318,9 +318,9 @@ def waka_breakdown(body, y, stats, period=None, recent_tokens=None):
     suffix = " · 7 days" if recent_tokens is not None else ""
     if all(value is not None for value in parts):
         metrics.append(("Total tokens" + suffix, f"{sum(parts):,}", None))
-    for caption, value in zip(("Uncached input", "Cached input", "Output tokens"), parts):
-        if value is not None:
-            metrics.append((caption + suffix, f"{value:,}", None))
+    output_tokens = tokens.get("ai_output_tokens")
+    if output_tokens is not None:
+        metrics.append(("Output tokens" + suffix, f"{output_tokens:,}", None))
     for index in range(0, len(metrics), 2):
         row = metrics[index:index+2]
         height = 54 if any(detail for _, _, detail in row) else 35
