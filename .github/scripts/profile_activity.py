@@ -7,7 +7,6 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
-from time import sleep
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 from textwrap import wrap
@@ -67,7 +66,7 @@ def public_contributions(owner):
     return counts
 
 
-def render_activity(events, contributions):
+def render_activity(events, contributions, profile_repo):
     recent = Counter()
     created_repos = set()
     weekdays = Counter()
@@ -91,11 +90,11 @@ def render_activity(events, contributions):
         body.extend([f'<rect class="bar" x="{x-13}" y="{152-height}" width="26" height="{height}" rx="3"/>',
                      label(x, 145-height, count, anchor="middle"), label(x, 173, day, "meta", "middle")])
 
-    body.append(label(16, 218, "Recently active repositories", "heading"))
+    body.append(label(16, 218, "Profile and recent repositories", "heading"))
     body.append(label(16, 243, "Past year’s contributions · recent public event counts", "meta"))
     y = 280
     # First appearance records the newest event for each distinct repository.
-    repos = list(recent)[:6]
+    repos = [profile_repo, *[repo for repo in recent if repo.casefold() != profile_repo.casefold()][:5]]
     for repo in repos:
         details = [f"{count} {kind}" for kind, count in contributions.get(repo, {}).items() if count]
         if repo in created_repos:
@@ -109,9 +108,6 @@ def render_activity(events, contributions):
             y += 20
         body.append(rule(y-6))
         y += 20
-    if not repos:
-        body.append(label(16, y, "No public activity in these periods.", "meta"))
-        y += 34
     save("metrics-activity.svg", "Pushes by weekday and recent activity", body, y-8)
 
 
@@ -129,6 +125,48 @@ def duration(seconds):
     return f"{minutes} min" if minutes else f"{int(seconds)} sec"
 
 
+def waka_optional(endpoint, token, default):
+    try:
+        return waka_data(endpoint, token)
+    except (URLError, TimeoutError, ValueError, KeyError) as error:
+        print(f"::warning::WakaTime {endpoint.split('?')[0]} unavailable ({type(error).__name__}).")
+        return default
+
+
+def summary_stats(days):
+    """Combine daily totals and weight chart percentages by tracked seconds."""
+    stats = {}
+    models = Counter()
+    sections = defaultdict(Counter)
+    active = []
+    for day in days:
+        totals = day["grand_total"]
+        seconds = totals["total_seconds"]
+        if seconds:
+            active.append((seconds, day["range"]["date"]))
+        for key in ("ai_additions", "ai_deletions", "human_additions", "human_deletions",
+                    "ai_sessions", "ai_prompt_events_total", "ai_input_tokens",
+                    "ai_output_tokens", "ai_model_total_cost"):
+            if totals.get(key) is not None:
+                stats[key] = stats.get(key, 0) + totals[key]
+        models.update(totals.get("ai_model_line_changes") or {})
+        for section in ("languages", "editors", "projects", "categories", "operating_systems"):
+            for row in day.get(section) or []:
+                sections[section][row["name"]] += row["total_seconds"]
+    stats["ai_model_line_changes"] = models
+    for key, counts in sections.items():
+        total = sum(counts.values())
+        if total:
+            stats[key] = [{"name": name, "percent": seconds * 100 / total}
+                          for name, seconds in counts.most_common()]
+    if active:
+        seconds, date = max(active)
+        stats["best_day"] = {"date": date, "text": duration(seconds)}
+        stats["human_readable_daily_average_including_other_language"] = duration(
+            sum(seconds for seconds, _ in active) / len(active))
+    return stats
+
+
 def render_wakatime():
     title = "WakaTime · all time"
     body = [label(16, 32, title, "heading")]
@@ -137,36 +175,30 @@ def render_wakatime():
     if not token:
         body.append(label(16, y, "Waiting for WakaTime access.", "meta"))
     else:
-        try:
-            total = waka_data("all_time_since_today", token)
-            seconds = total.get("total_seconds")
-            if seconds is not None and (seconds or total.get("is_up_to_date", True)):
-                body.append(label(16, y, duration(seconds) + " tracked since joining", "name"))
-                y += 24
-            if total.get("is_up_to_date") is False:
-                body.append(label(16, y, "WakaTime is updating the lifetime total.", "meta"))
-                y += 24
-        except (URLError, TimeoutError, ValueError, KeyError) as error:
-            print(f"::warning::Lifetime total unavailable ({type(error).__name__}).")
-        try:
-            today = datetime.now(timezone(timedelta(hours=7))).date()
-            days = waka_data(f"summaries?start={today-timedelta(days=6)}&end={today}&timezone=Asia%2FHo_Chi_Minh", token)
-            times = [(day["range"]["date"], day["grand_total"]["total_seconds"]) for day in days]
-            peak = max((seconds for _, seconds in times), default=0) or 1
-            if times:
-                y = waka_bars(body, y, "Last 7 days · UTC+7",
-                              [(date, seconds*100/peak, duration(seconds)) for date, seconds in times])
-        except (URLError, TimeoutError, ValueError, KeyError) as error:
-            print(f"::warning::Daily WakaTime summaries unavailable ({type(error).__name__}).")
-        try:
-            stats = waka_data("stats/all_time", token)
-            if stats.get("is_up_to_date") is False:
-                sleep(4)
-                stats = waka_data("stats/all_time", token)
-            y = waka_breakdown(body, y, stats)
-        except (URLError, TimeoutError, ValueError, KeyError) as error:
-            print(f"::warning::WakaTime breakdown unavailable ({type(error).__name__}).")
-            body.append(label(16, y, "All-time breakdown currently unavailable.", "meta"))
+        lifetime = waka_optional("all_time_since_today", token, {})
+        stats = waka_optional("stats/all_time", token, {})
+        today = datetime.now(timezone(timedelta(hours=7))).date()
+        start = today - timedelta(days=6)
+        days = waka_optional(f"summaries?start={start}&end={today}&timezone=Asia%2FHo_Chi_Minh", token, [])
+        observed = sum(day["grand_total"]["total_seconds"] for day in days)
+        aggregate = stats.get("total_seconds_including_other_language") or stats.get("total_seconds") or 0
+        lifetime_seconds = max(lifetime.get("total_seconds") or 0, aggregate)
+        if lifetime_seconds or observed:
+            lagging = observed > lifetime_seconds
+            caption = " or more tracked · lifetime total updating" if lagging else " tracked since joining"
+            body.append(label(16, y, duration(max(lifetime_seconds, observed)) + caption, "name"))
+            y += 28
+        if observed and (aggregate < observed or not stats.get("languages")):
+            # A new account can have daily data before lifetime charts are computed.
+            stats = summary_stats(days)
+            dates = sorted(day["range"]["date"] for day in days if day["grand_total"]["total_seconds"])
+            body.append(label(16, y, f"Recorded breakdown · {dates[0]} to {dates[-1]}", "meta"))
+            y += 26
+        elif not aggregate:
+            body.append(label(16, y, "Waiting for recorded coding activity.", "meta"))
+            stats = {}
+            y += 24
+        y = waka_breakdown(body, y, stats)
     save("metrics-wakatime.svg", title, body, y+20)
 
 
@@ -228,5 +260,5 @@ owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
 pages = json.loads(subprocess.check_output(
     ["gh", "api", "--paginate", "--slurp", f"users/{owner}/events/public?per_page=100"]))
 events = {event["id"]: event for page in pages for event in page}
-render_activity(events.values(), public_contributions(owner))
+render_activity(events.values(), public_contributions(owner), f"{owner}/{owner}")
 render_wakatime()
