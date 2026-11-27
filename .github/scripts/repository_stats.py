@@ -4,28 +4,52 @@ import json
 import os
 import subprocess
 from collections import Counter
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 
+def _is_github_api_url(url):
+    parsed = urlparse(url)
+    return parsed.scheme == "https" and parsed.hostname == "api.github.com"
+
+
 def container_count(owner, repositories, namespaces):
+    token = (os.environ.get("PACKAGES_TOKEN") or "").strip()
+    if not token:
+        print("::warning::PACKAGES_TOKEN missing; skipping container package count.")
+        return None
     count = 0
     for login, kind in namespaces.items():
         prefix = "orgs" if kind == "Organization" else "users"
         url = (f"https://api.github.com/{prefix}/{login}/packages?package_type=container"
                "&visibility=public&per_page=100")
         while url:
-            request = Request(url, headers={"Authorization": "Bearer " + os.environ["PACKAGES_TOKEN"]})
+            if not _is_github_api_url(url):
+                print(f"::warning::Refusing non-GitHub pagination URL for {login}.")
+                return None
+            request = Request(url, headers={"Authorization": "Bearer " + token})
             try:
                 response = urlopen(request, timeout=30)
             except HTTPError as error:
-                if error.code not in (400, 401, 403, 404):
+                if error.code not in (400, 401, 403, 404, 429):
                     raise
                 print(f"::warning::Package inventory unavailable for {login} (HTTP {error.code}).")
                 return None
+            except (URLError, TimeoutError) as error:
+                print(f"::warning::Package inventory unavailable for {login} ({type(error).__name__}).")
+                return None
             with response:
-                for package in json.load(response):
-                    repo = package.get("repository") or {}
+                try:
+                    payload = json.load(response)
+                except ValueError:
+                    print(f"::warning::Invalid JSON in package inventory for {login}.")
+                    return None
+                if not isinstance(payload, list):
+                    print(f"::warning::Unexpected package inventory payload for {login}.")
+                    return None
+                for package in payload:
+                    repo = (package.get("repository") if isinstance(package, dict) else None) or {}
                     if login == owner or repo.get("full_name") in repositories:
                         count += 1
                 links = response.headers.get("Link", "").split(",")

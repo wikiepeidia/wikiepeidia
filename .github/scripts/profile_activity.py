@@ -1,13 +1,14 @@
 """Render two self-contained, theme-aware SVG cards from public GitHub feeds."""
 
 import json
+import math
 import os
 import subprocess
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
@@ -54,12 +55,14 @@ def clipped(value, limit):
 
 
 def compact_number(value, threshold=1_000_000_000):
+    if isinstance(value, float) and not math.isfinite(value):
+        return "0"
     if abs(value) < threshold:
         return f"{value:,.0f}" if isinstance(value, float) else f"{value:,}"
     for unit, scale in (("Q", 10**15), ("T", 10**12), ("B", 10**9), ("M", 10**6), ("K", 10**3)):
         if abs(value) >= scale:
             return f"{value / scale:,.1f}{unit}"
-    return f"{value:,}"
+    return f"{value:,.0f}" if isinstance(value, float) else f"{value:,}"
 
 
 def profile_rank(owner):
@@ -197,12 +200,23 @@ def duration(seconds):
     return f"{minutes} min" if minutes else f"{total} sec"
 
 
-def waka_optional(endpoint, token, default):
+def waka_optional(endpoint, token, default, status=None):
+    name = endpoint.split("?")[0]
     try:
-        return waka_data(endpoint, token)
-    except (URLError, TimeoutError, ValueError, KeyError) as error:
-        print(f"::warning::WakaTime {endpoint.split('?')[0]} unavailable ({type(error).__name__}).")
+        result = waka_data(endpoint, token)
+    except HTTPError as error:
+        if status is not None and error.code in (401, 403):
+            status["auth_error"] = error.code
+        hint = " — token may be expired" if error.code in (401, 403) else ""
+        print(f"::warning::WakaTime {name} unavailable (HTTP {error.code}{hint}).")
         return default
+    except (URLError, TimeoutError, ValueError, KeyError, TypeError) as error:
+        print(f"::warning::WakaTime {name} unavailable ({type(error).__name__}).")
+        return default
+    if not isinstance(result, type(default)):
+        print(f"::warning::WakaTime {name} returned unexpected payload type ({type(result).__name__}).")
+        return default
+    return result
 
 
 def cached_tokens(totals):
@@ -262,17 +276,19 @@ def summary_stats(days):
 def render_wakatime():
     title = "WakaTime · all time"
     body = banner("WAKATIME", "All-time coding")
-    token = os.environ.get("WAKATIME_TOKEN")
+    token = (os.environ.get("WAKATIME_TOKEN") or "").strip()
     y = 118
     if not token:
         body.append(label(16, y, "Waiting for WakaTime access.", "meta"))
     else:
-        lifetime = waka_optional("all_time_since_today", token, {})
-        stats = waka_optional("stats/all_time", token, {})
+        api_status = {}
+        lifetime = waka_optional("all_time_since_today", token, {}, api_status)
+        stats = waka_optional("stats/all_time", token, {}, api_status)
         today = datetime.now(timezone(timedelta(hours=7))).date()
         start = today - timedelta(days=6)
-        days = waka_optional(f"summaries?start={start}&end={today}&timezone=Asia%2FHo_Chi_Minh", token, [])
-        observed = sum(day["grand_total"]["total_seconds"] for day in days)
+        days = waka_optional(f"summaries?start={start}&end={today}&timezone=Asia%2FHo_Chi_Minh", token, [], api_status)
+        days = [day for day in days if isinstance(day, dict) and isinstance(day.get("grand_total"), dict)]
+        observed = sum((day["grand_total"].get("total_seconds") or 0) for day in days)
         aggregate = stats.get("total_seconds_including_other_language") or stats.get("total_seconds") or 0
         lifetime_seconds = max(lifetime.get("total_seconds") or 0, aggregate)
         if lifetime_seconds or observed:
@@ -283,14 +299,17 @@ def render_wakatime():
         recent_tokens = None
         if observed and (aggregate < observed or not stats.get("languages")):
             stats = summary_stats(days)
-            first = min(day["range"]["date"] for day in days if day["grand_total"]["total_seconds"])
+            first = min(day["range"]["date"] for day in days if day["grand_total"].get("total_seconds"))
             last = max(day["range"]["date"] for day in days)
             period = (date.fromisoformat(first), date.fromisoformat(last))
         elif aggregate:
             if stats.get("start") and stats.get("end"):
                 local = timezone(timedelta(hours=7))
-                period = tuple(datetime.fromisoformat(stats[key].replace("Z", "+00:00")).astimezone(local).date()
-                               for key in ("start", "end"))
+                try:
+                    period = tuple(datetime.fromisoformat(stats[key].replace("Z", "+00:00")).astimezone(local).date()
+                                   for key in ("start", "end"))
+                except (ValueError, AttributeError):
+                    period = None
             # Today's summary can beat a record before WakaTime refreshes its lifetime cache.
             recent = summary_stats(days)
             recent_best = recent.get("best_day")
@@ -300,7 +319,9 @@ def render_wakatime():
             if recent_best and recent_best["total_seconds"] > cached_best.get("total_seconds", float("inf")):
                 stats["best_day"] = recent_best
         else:
-            body.append(label(16, y, "Waiting for recorded coding activity.", "meta"))
+            message = ("WakaTime access expired or unauthorized."
+                       if api_status.get("auth_error") else "Waiting for recorded coding activity.")
+            body.append(label(16, y, message, "meta"))
             stats = {}
             y += 24
         y = waka_breakdown(body, y, stats, period, recent_tokens)
@@ -329,7 +350,12 @@ def waka_breakdown(body, y, stats, period=None, recent_tokens=None):
         metrics.append(("Recorded breakdown", f"{period[0]:%d/%m/%Y} –", f"{period[1]:%d/%m/%Y}"))
     best = stats.get("best_day") or {}
     if best.get("date"):
-        metrics.append(("Best day", f"{date.fromisoformat(best['date']):%d/%m/%Y}", best.get("text")))
+        try:
+            best_date = date.fromisoformat(str(best["date"])[:10])
+        except ValueError:
+            best_date = None
+        if best_date:
+            metrics.append(("Best day", f"{best_date:%d/%m/%Y}", best.get("text")))
     for key, caption in (("human_readable_daily_average_including_other_language", "Daily average"),
                          ("ai_prompt_events_total", "AI prompts"), ("ai_sessions", "AI sessions"),
                          ("ai_model_total_cost", "Estimated AI spend")):
