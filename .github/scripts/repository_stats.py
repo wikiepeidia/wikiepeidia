@@ -33,26 +33,35 @@ def container_count(owner, repositories, namespaces):
     return count
 
 
-owner = os.environ["GITHUB_REPOSITORY_OWNER"]
-query = """query($login:String!,$endCursor:String) { user(login:$login) {
-  repositories(first:100,after:$endCursor,privacy:PUBLIC,ownerAffiliations:[OWNER,COLLABORATOR,ORGANIZATION_MEMBER]){
-    pageInfo{hasNextPage endCursor}
-    nodes{nameWithOwner owner{login __typename} releases{totalCount} packages{totalCount} licenseInfo{spdxId}}
-  }
-} }"""
-pages = json.loads(subprocess.check_output(["gh", "api", "graphql", "--paginate", "--slurp",
-                                            "-f", f"query={query}", "-f", f"login={owner}"]))
-repos = [repo for page in pages for repo in page["data"]["user"]["repositories"]["nodes"]]
-licenses = Counter((repo["licenseInfo"] or {}).get("spdxId") for repo in repos)
-for unknown in (None, "", "Other", "NOASSERTION", "NONE"):
-    licenses.pop(unknown, None)
-favorite = min(licenses, key=lambda name: (-licenses[name], name)) if licenses else None
-namespaces = {owner: "User"}
-namespaces.update({repo["owner"]["login"]: repo["owner"]["__typename"] for repo in repos})
-containers = container_count(owner, {repo["nameWithOwner"] for repo in repos}, namespaces)
-linked_packages = sum(repo["packages"]["totalCount"] for repo in repos)
-stats = {"releases": sum(repo["releases"]["totalCount"] for repo in repos),
-         "packages": linked_packages + (containers or 0), "containers_checked": containers is not None,
-         "license": favorite}
-with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
-    print("stats=" + json.dumps(stats), file=output)
+def compute_stats(owner, pages, container_fn=container_count):
+    repos = [repo for page in pages for repo in page["data"]["user"]["repositories"]["nodes"]]
+    licenses = Counter((repo["licenseInfo"] or {}).get("spdxId") for repo in repos)
+    for unknown in (None, "", "Other", "NOASSERTION", "NONE"):
+        licenses.pop(unknown, None)
+    favorite = min(licenses, key=lambda name: (-licenses[name], name)) if licenses else None
+    namespaces = {owner: "User"}
+    namespaces.update({repo["owner"]["login"]: repo["owner"]["__typename"] for repo in repos})
+    containers = container_fn(owner, {repo["nameWithOwner"] for repo in repos}, namespaces)
+    linked_packages = sum(repo["packages"]["totalCount"] for repo in repos)
+    return {"releases": sum(repo["releases"]["totalCount"] for repo in repos),
+            "packages": linked_packages + (containers or 0), "containers_checked": containers is not None,
+            "license": favorite}
+
+
+def main():
+    owner = os.environ["GITHUB_REPOSITORY_OWNER"]
+    query = """query($login:String!,$endCursor:String) { user(login:$login) {
+      repositories(first:100,after:$endCursor,privacy:PUBLIC,ownerAffiliations:[OWNER,COLLABORATOR,ORGANIZATION_MEMBER]){
+        pageInfo{hasNextPage endCursor}
+        nodes{nameWithOwner owner{login __typename} releases{totalCount} packages{totalCount} licenseInfo{spdxId}}
+      }
+    } }"""
+    pages = json.loads(subprocess.check_output(["gh", "api", "graphql", "--paginate", "--slurp",
+                                                "-f", f"query={query}", "-f", f"login={owner}"]))
+    stats = compute_stats(owner, pages)
+    with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
+        print("stats=" + json.dumps(stats), file=output)
+
+
+if __name__ == "__main__":
+    main()

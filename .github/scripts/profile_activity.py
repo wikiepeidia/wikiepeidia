@@ -34,7 +34,7 @@ def label(x, y, value, style="", anchor="start"):
 
 def save(filename, title, body, height, gradient=("#153f78", "#55328b")):
     svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="{height}" '
-           f'viewBox="0 0 480 {height}" role="img"><title>{title}</title>',
+           f'viewBox="0 0 480 {height}" role="img"><title>{escape(str(title))}</title>',
            f'<style>{STYLE}</style>',
            '<defs><linearGradient id="ink" x2="1" y2="1" gradientUnits="objectBoundingBox">'
            f'<stop stop-color="{gradient[0]}"/><stop offset="1" stop-color="{gradient[1]}"/></linearGradient></defs>',
@@ -51,6 +51,15 @@ def banner(caption, value, accent="#aba9ff"):
 
 def clipped(value, limit):
     return value if len(value) <= limit else value[:limit - 1] + "…"
+
+
+def compact_number(value, threshold=1_000_000_000):
+    if abs(value) < threshold:
+        return f"{value:,.0f}" if isinstance(value, float) else f"{value:,}"
+    for unit, scale in (("Q", 10**15), ("T", 10**12), ("B", 10**9), ("M", 10**6), ("K", 10**3)):
+        if abs(value) >= scale:
+            return f"{value / scale:,.1f}{unit}"
+    return f"{value:,}"
 
 
 def profile_rank(owner):
@@ -81,13 +90,16 @@ def graphql_user(owner, query, *variables):
 
 def readme_rank(commits, prs, issues, reviews, stars, followers):
     # github-readme-stats/src/calculateRank.js, include_all_commits=true.
+    commits, prs, issues, reviews, stars, followers = (
+        max(0, v) for v in (commits, prs, issues, reviews, stars, followers)
+    )
     weighted = sum(weight * (1 - 2 ** (-count / median)) for count, median, weight in
                    [(commits, 1000, 2), (prs, 50, 3), (issues, 25, 1), (reviews, 2, 1)])
     weighted += 4 * stars / (stars + 50) + followers / (followers + 10)
     score = 100 * (1 - weighted / 12)
     thresholds = [(1, "S"), (12.5, "A+"), (25, "A"), (37.5, "A-"), (50, "B+"),
                   (62.5, "B"), (75, "B-"), (87.5, "C+"), (100, "C")]
-    return next(grade for limit, grade in thresholds if score <= limit)
+    return next((grade for limit, grade in thresholds if score <= limit), "C")
 
 
 def daily_history(owner, joined, today):
@@ -178,10 +190,11 @@ def waka_data(endpoint, token):
 
 
 def duration(seconds):
-    minutes = int(seconds) // 60
+    total = max(0, int(seconds))
+    minutes = total // 60
     if minutes >= 60:
-        return f"{minutes // 60}h {minutes % 60}m"
-    return f"{minutes} min" if minutes else f"{int(seconds)} sec"
+        return f"{minutes // 60:,}h {minutes % 60}m"
+    return f"{minutes} min" if minutes else f"{total} sec"
 
 
 def waka_optional(endpoint, token, default):
@@ -303,7 +316,7 @@ def spend_vnd(usd):
             with urlopen(f"{base}/v1/currencies/usd.min.json", timeout=8) as response:
                 rate = json.load(response)["usd"]["vnd"]
             if rate > 0:
-                return f"{usd * rate:,.0f} VND"
+                return f"{compact_number(usd * rate, threshold=1_000_000_000_000)} VND"
         except (URLError, TimeoutError, KeyError, ValueError, TypeError):
             continue
     print("::warning::USD/VND rate unavailable.")
@@ -325,17 +338,17 @@ def waka_breakdown(body, y, stats, period=None, recent_tokens=None):
             continue
         if key == "ai_model_total_cost":
             value = spend_vnd(value)
-        elif isinstance(value, int):
-            value = f"{value:,}"
+        elif isinstance(value, (int, float)):
+            value = compact_number(value)
         metrics.append((caption, value, None))
     tokens = recent_tokens if recent_tokens is not None else stats
     parts = (tokens.get("ai_input_tokens"), cached_tokens(tokens), tokens.get("ai_output_tokens"))
     suffix = " · 7 days" if recent_tokens is not None else ""
     if all(value is not None for value in parts):
-        metrics.append(("Total tokens" + suffix, f"{sum(parts):,}", None))
+        metrics.append(("Total tokens" + suffix, compact_number(sum(parts)), None))
     output_tokens = tokens.get("ai_output_tokens")
     if output_tokens is not None:
-        metrics.append(("Output tokens" + suffix, f"{output_tokens:,}", None))
+        metrics.append(("Output tokens" + suffix, compact_number(output_tokens), None))
     for index in range(0, len(metrics), 2):
         row = metrics[index:index+2]
         height = 54 if any(detail for _, _, detail in row) else 35
@@ -356,7 +369,7 @@ def waka_breakdown(body, y, stats, period=None, recent_tokens=None):
     for heading, values in sections:
         total = sum(values.values())
         if total:
-            rows = [(name, value*100/total, f"{value:,}") for name, value in
+            rows = [(name, value*100/total, compact_number(value, threshold=1_000_000)) for name, value in
                     sorted(values.items(), key=lambda item: -item[1])[:5]]
             y = waka_bars(body, y, heading, rows)
     for key in ("languages", "editors", "projects", "categories", "operating_systems"):
@@ -373,7 +386,7 @@ def waka_bars(body, y, heading, rows):
     palette = {"Languages": "#287fc1", "Editors": "#895cc7", "Projects": "#188576",
                "Categories": "#bc6941", "Operating systems": "#5270ba",
                "Line changes": "#a85492", "AI model line changes": "#765bc7"}
-    color = palette[heading]
+    color = palette.get(heading, "#8175d6")
     for name, percent, display in rows:
         y += 22
         width = max(0, min(100, percent)) * 1.45
@@ -384,12 +397,17 @@ def waka_bars(body, y, heading, rows):
     return y+24
 
 
-owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
-joined, rank = profile_rank(owner)
-today = datetime.now(timezone(timedelta(hours=7))).date()
-history, repo_count = daily_history(owner, joined, today)
-render_rank_streak(history, joined, today, rank)
-if os.environ.get("GITHUB_OUTPUT"):
-    with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
-        print(f"repo_count={repo_count}", file=output)
-render_wakatime()
+def main():
+    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
+    joined, rank = profile_rank(owner)
+    today = datetime.now(timezone(timedelta(hours=7))).date()
+    history, repo_count = daily_history(owner, joined, today)
+    render_rank_streak(history, joined, today, rank)
+    if os.environ.get("GITHUB_OUTPUT"):
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
+            print(f"repo_count={repo_count}", file=output)
+    render_wakatime()
+
+
+if __name__ == "__main__":
+    main()
