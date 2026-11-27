@@ -22,11 +22,13 @@ Here are some ideas to get you started
 ## GitHub Stats
 
 <table>
-<tr><th>Overview and languages</th><th>Activity and WakaTime</th></tr>
+<tr><th>GitHub overview and activity</th><th>WakaTime</th></tr>
 <tr>
-<td width="50%" valign="top"><img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-overview.svg" alt="GitHub overview, contribution calendar, streak, and top languages"></td>
 <td width="50%" valign="top">
+<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-overview.svg" alt="GitHub overview, contribution calendar, streak, and top languages"><br>
 <img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-activity.svg" alt="Public pushes by weekday and recent activity">
+</td>
+<td width="50%" valign="top">
 <img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-wakatime.svg" alt="All-time WakaTime coding activity and AI usage">
 </td>
 </tr>
