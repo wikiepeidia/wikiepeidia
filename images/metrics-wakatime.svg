@@ -18,7 +18,7 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <rect width="480" height="86" rx="14" fill="url(#ink)"/>
 <path d="M335 85 L403 17 L471 85 M376 85 L443 18 L480 55" fill="none" stroke="#aba9ff" stroke-opacity=".26" stroke-width="3"/>
 <text x="18" y="28" class="kicker" text-anchor="start">WAKATIME  ·  ALL TIME</text>
-<text x="18" y="64" class="hero" text-anchor="start">2h 42m tracked since joining</text>
+<text x="18" y="64" class="hero" text-anchor="start">2h 48m tracked since joining</text>
 <rect x="18" y="106" width="3" height="54" rx="1.5" fill="#8175d6"/>
 <text x="30" y="118" class="meta" text-anchor="start">Recorded breakdown</text>
 <text x="30" y="141" class="name number" text-anchor="start">26/11/2026 –</text>
@@ -26,10 +26,10 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <rect x="244" y="106" width="3" height="54" rx="1.5" fill="#8175d6"/>
 <text x="256" y="118" class="meta" text-anchor="start">Best day</text>
 <text x="256" y="141" class="name number" text-anchor="start">27/11/2026</text>
-<text x="256" y="160" class="meta" text-anchor="start">1h 21m</text>
+<text x="256" y="160" class="meta" text-anchor="start">1h 27m</text>
 <rect x="18" y="182" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="30" y="194" class="meta" text-anchor="start">Daily average</text>
-<text x="30" y="217" class="name number" text-anchor="start">1h 17m</text>
+<text x="30" y="217" class="name number" text-anchor="start">1h 20m</text>
 <rect x="244" y="182" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="256" y="194" class="meta" text-anchor="start">AI prompts</text>
 <text x="256" y="217" class="name number" text-anchor="start">30</text>
@@ -38,13 +38,13 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <text x="30" y="274" class="name number" text-anchor="start">6</text>
 <rect x="244" y="239" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="256" y="251" class="meta" text-anchor="start">Input tokens</text>
-<text x="256" y="274" class="name number" text-anchor="start">1,300,554</text>
+<text x="256" y="274" class="name number" text-anchor="start">1,304,844</text>
 <rect x="18" y="296" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="30" y="308" class="meta" text-anchor="start">Output tokens</text>
-<text x="30" y="331" class="name number" text-anchor="start">46,934</text>
+<text x="30" y="331" class="name number" text-anchor="start">48,592</text>
 <rect x="244" y="296" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="256" y="308" class="meta" text-anchor="start">Estimated AI spend</text>
-<text x="256" y="331" class="name number" text-anchor="start">632,462 VND</text>
+<text x="256" y="331" class="name number" text-anchor="start">650,078 VND</text>
 <text x="16" y="377" class="name" text-anchor="start">Line changes</text>
 <text x="16" y="399" class="" text-anchor="start">AI</text>
 <rect class="track" x="240" y="389" width="145" height="8" rx="4"/>
@@ -60,48 +60,48 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <rect fill="#765bc7" x="240" y="469" width="145.0" height="8" rx="4"/>
 <text x="464" y="479" class="meta" text-anchor="end">49</text>
 <text x="16" y="515" class="name" text-anchor="start">Languages</text>
-<text x="16" y="537" class="" text-anchor="start">Python</text>
+<text x="16" y="537" class="" text-anchor="start">YAML</text>
 <rect class="track" x="240" y="527" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="527" width="41.5" height="8" rx="4"/>
-<text x="464" y="537" class="meta" text-anchor="end">29%</text>
-<text x="16" y="559" class="" text-anchor="start">YAML</text>
+<rect fill="#287fc1" x="240" y="527" width="45.2" height="8" rx="4"/>
+<text x="464" y="537" class="meta" text-anchor="end">31%</text>
+<text x="16" y="559" class="" text-anchor="start">Python</text>
 <rect class="track" x="240" y="549" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="549" width="40.8" height="8" rx="4"/>
+<rect fill="#287fc1" x="240" y="549" width="39.9" height="8" rx="4"/>
 <text x="464" y="559" class="meta" text-anchor="end">28%</text>
 <text x="16" y="581" class="" text-anchor="start">Other</text>
 <rect class="track" x="240" y="571" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="571" width="32.0" height="8" rx="4"/>
-<text x="464" y="581" class="meta" text-anchor="end">22%</text>
+<rect fill="#287fc1" x="240" y="571" width="30.3" height="8" rx="4"/>
+<text x="464" y="581" class="meta" text-anchor="end">21%</text>
 <text x="16" y="603" class="" text-anchor="start">Markdown</text>
 <rect class="track" x="240" y="593" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="593" width="30.7" height="8" rx="4"/>
-<text x="464" y="603" class="meta" text-anchor="end">21%</text>
+<rect fill="#287fc1" x="240" y="593" width="29.6" height="8" rx="4"/>
+<text x="464" y="603" class="meta" text-anchor="end">20%</text>
 <text x="16" y="639" class="name" text-anchor="start">Editors</text>
 <text x="16" y="661" class="" text-anchor="start">VS Code</text>
 <rect class="track" x="240" y="651" width="145" height="8" rx="4"/>
-<rect fill="#895cc7" x="240" y="651" width="80.2" height="8" rx="4"/>
-<text x="464" y="661" class="meta" text-anchor="end">55%</text>
+<rect fill="#895cc7" x="240" y="651" width="77.2" height="8" rx="4"/>
+<text x="464" y="661" class="meta" text-anchor="end">53%</text>
 <text x="16" y="683" class="" text-anchor="start">Codex Vscode</text>
 <rect class="track" x="240" y="673" width="145" height="8" rx="4"/>
-<rect fill="#895cc7" x="240" y="673" width="64.8" height="8" rx="4"/>
-<text x="464" y="683" class="meta" text-anchor="end">45%</text>
+<rect fill="#895cc7" x="240" y="673" width="67.8" height="8" rx="4"/>
+<text x="464" y="683" class="meta" text-anchor="end">47%</text>
 <text x="16" y="719" class="name" text-anchor="start">Projects</text>
 <text x="16" y="741" class="" text-anchor="start">wikiepeidia</text>
 <rect class="track" x="240" y="731" width="145" height="8" rx="4"/>
-<rect fill="#188576" x="240" y="731" width="136.0" height="8" rx="4"/>
+<rect fill="#188576" x="240" y="731" width="136.4" height="8" rx="4"/>
 <text x="464" y="741" class="meta" text-anchor="end">94%</text>
 <text x="16" y="763" class="" text-anchor="start">ANSER_AI_Logistics</text>
 <rect class="track" x="240" y="753" width="145" height="8" rx="4"/>
-<rect fill="#188576" x="240" y="753" width="9.0" height="8" rx="4"/>
+<rect fill="#188576" x="240" y="753" width="8.6" height="8" rx="4"/>
 <text x="464" y="763" class="meta" text-anchor="end">6%</text>
 <text x="16" y="799" class="name" text-anchor="start">Categories</text>
 <text x="16" y="821" class="" text-anchor="start">AI Coding</text>
 <rect class="track" x="240" y="811" width="145" height="8" rx="4"/>
-<rect fill="#bc6941" x="240" y="811" width="125.9" height="8" rx="4"/>
+<rect fill="#bc6941" x="240" y="811" width="126.6" height="8" rx="4"/>
 <text x="464" y="821" class="meta" text-anchor="end">87%</text>
 <text x="16" y="843" class="" text-anchor="start">Coding</text>
 <rect class="track" x="240" y="833" width="145" height="8" rx="4"/>
-<rect fill="#bc6941" x="240" y="833" width="17.9" height="8" rx="4"/>
+<rect fill="#bc6941" x="240" y="833" width="17.2" height="8" rx="4"/>
 <text x="464" y="843" class="meta" text-anchor="end">12%</text>
 <text x="16" y="865" class="" text-anchor="start">Writing Docs</text>
 <rect class="track" x="240" y="855" width="145" height="8" rx="4"/>
