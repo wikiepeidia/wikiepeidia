@@ -42,6 +42,7 @@ jobs:
           repositories_batch: '25'
           extras_js: |
             for (const field of document.querySelectorAll("div.field")) {
+              if (/^Contributed to\s+[\d,]+\s+repositor(?:y|ies)$/i.test(field.textContent.trim())) field.append(" recently")
               if (/^Prefers\s+.+\s+license$/i.test(field.textContent.trim())) field.remove()
             }
           plugin_followup: 'yes'

@@ -16,11 +16,13 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 .heading { font-size: 21px; font-weight: 650 }
 .name { font-size: 17px; font-weight: 600 }
 .meta { font-size: 14px; fill: #59636e }
-.bar { fill: #1f883d }
-.rule { stroke: #d1d9e0 }
+.surface { fill: #f6f8fa } .track { fill: #dce4ed }
+.hero { fill: white; font-size: 28px; font-weight: 700 }
+.kicker { fill: #e3eeff; font-weight: 600; letter-spacing: .7px }
+.number { font-weight: 700; font-variant-numeric: tabular-nums }
 @media (prefers-color-scheme: dark) {
-  text { fill: #f0f6fc } .meta { fill: #a3adb7 }
-  .bar { fill: #3fb950 } .rule { stroke: #3d444d }
+  text { fill: #f0f6fc } .meta { fill: #b2becb }
+  .surface { fill: #161b22 } .track { fill: #303b48 }
 }
 """
 
@@ -33,8 +35,18 @@ def label(x, y, value, style="", anchor="start"):
 def save(filename, title, body, height):
     svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="{height}" '
            f'viewBox="0 0 480 {height}" role="img"><title>{title}</title>',
-           f'<style>{STYLE}</style>', *body, '</svg>']
+           f'<style>{STYLE}</style>',
+           '<defs><linearGradient id="ink" x2="1" y2="1" gradientUnits="objectBoundingBox">'
+           '<stop stop-color="#153f78"/><stop offset="1" stop-color="#55328b"/></linearGradient></defs>',
+           f'<rect class="surface" width="480" height="{height}" rx="14"/>', *body, '</svg>']
     Path("images", filename).write_bytes(("\n".join(svg) + "\n").encode())
+
+
+def banner(caption, value):
+    return ['<rect width="480" height="86" rx="14" fill="url(#ink)"/>',
+            '<path d="M335 85 L403 17 L471 85 M376 85 L443 18 L480 55" '
+            'fill="none" stroke="#aba9ff" stroke-opacity=".26" stroke-width="3"/>',
+            label(18, 28, caption, "kicker"), label(18, 64, value, "hero")]
 
 
 def clipped(value, limit):
@@ -81,23 +93,36 @@ def readme_rank(commits, prs, issues, reviews, stars, followers):
 def daily_history(owner, joined, today):
     query = """query($login:String!, $from:DateTime!, $to:DateTime!) {
       user(login:$login) { contributionsCollection(from:$from, to:$to) {
+        commits:commitContributionsByRepository(maxRepositories:100){repository{id visibility}}
+        issues:issueContributionsByRepository(maxRepositories:100){repository{id visibility}}
+        prs:pullRequestContributionsByRepository(maxRepositories:100){repository{id visibility}}
+        reviews:pullRequestReviewContributionsByRepository(maxRepositories:100){repository{id visibility}}
+        created:repositoryContributions(first:100){nodes{repository{id visibility}} pageInfo{hasNextPage}}
         contributionCalendar { weeks { contributionDays { date contributionCount } } }
       } }
     }"""
     history = {}
+    repositories = set()
+    capped = False
     for year in range(joined.year, today.year + 1):
         start = max(joined, date(year, 1, 1))
         end = min(today, date(year, 12, 31))
         user = graphql_user(owner, query, f"from={start}T00:00:00Z", f"to={end}T23:59:59Z")
-        for week in user["contributionsCollection"]["contributionCalendar"]["weeks"]:
+        collection = user["contributionsCollection"]
+        groups = [collection[key] for key in ("commits", "issues", "prs", "reviews")]
+        capped |= any(len(group) == 100 for group in groups) or collection["created"]["pageInfo"]["hasNextPage"]
+        for group in [*groups, collection["created"]["nodes"]]:
+            repositories.update(item["repository"]["id"] for item in group
+                                if item["repository"] and item["repository"]["visibility"] == "PUBLIC")
+        for week in collection["contributionCalendar"]["weeks"]:
             for day in week["contributionDays"]:
                 when = date.fromisoformat(day["date"])
                 if start <= when <= end:
                     history[when] = day["contributionCount"]
-    return history
+    return history, f"{len(repositories)}{'+' if capped else ''}"
 
 
-def render_rank_streak(history, joined, today, rank):
+def render_rank_streak(history, joined, today, rank, repo_count):
     total = run = current = longest = 0
     body = []
     for offset in range((today - joined).days + 1):
@@ -108,23 +133,23 @@ def render_rank_streak(history, joined, today, rank):
         longest = max(longest, run)
         if day == today - timedelta(days=1) or (day == today and count):
             current = run
-    body.extend([label(16, 30, "GitHub README rank", "heading"),
-                 label(16, 55, f"{total:,} contributions since {joined:%b %Y}", "meta")])
+    body = banner("GITHUB README RANK", f"Grade {rank}")
+    body.append(label(18, 116, f"{total:,} contributions since {joined:%b %Y}", "name"))
+    body.append(label(18, 140, f"{repo_count} public repositories contributed to", "meta"))
     for index, grade in enumerate(("C", "C+", "B-", "B", "B+", "A-", "A", "A+", "S")):
-        x = 16 + index * 50
-        if grade == rank:
-            body.append(f'<rect x="{x}" y="68" width="44" height="32" rx="8" fill="#166534"/>')
-            body.append(f'<text x="{x+22}" y="90" text-anchor="middle" style="fill:white;font-weight:700">{grade}</text>')
-        else:
-            body.append(label(x+22, 90, grade, "meta", "middle"))
-    body.append(label(16, 138, "Contribution streak", "heading"))
-    for y, caption, days in ((171, "Current", current), (202, "Longest", longest)):
-        body.append(label(16, y, caption))
-        body.append(f'<rect x="95" y="{y-12}" width="272" height="10" rx="5" fill="#888" opacity=".22"/>')
-        width = 272 * days / max(longest, 1)
-        body.append(f'<rect class="bar" x="95" y="{y-12}" width="{width:.1f}" height="10" rx="5"/>')
-        body.append(label(464, y, f"{days} day" if days == 1 else f"{days} days", "name", "end"))
-    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 222)
+        x = 18 + index * 50
+        active = grade == rank
+        fill = 'fill="#6948ad"' if active else 'class="track"'
+        body.append(f'<rect x="{x}" y="157" width="42" height="30" rx="8" {fill}/>')
+        body.append(label(x+21, 178, grade, "kicker" if active else "number", "middle"))
+    body.append(label(18, 224, "Contribution streak", "heading"))
+    for y, caption, days, color in ((257, "Current", current, "#167e91"), (290, "Longest", longest, "#9560d3")):
+        body.append(label(18, y, caption))
+        body.append(f'<rect class="track" x="109" y="{y-11}" width="245" height="9" rx="4"/>')
+        width = 245 * days / max(longest, 1)
+        body.append(f'<rect fill="{color}" x="109" y="{y-11}" width="{width:.1f}" height="9" rx="4"/>')
+        body.append(label(462, y, f"{days} day" if days == 1 else f"{days} days", "number", "end"))
+    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 313)
 
 
 def waka_data(endpoint, token):
@@ -185,9 +210,9 @@ def summary_stats(days):
 
 def render_wakatime():
     title = "WakaTime · all time"
-    body = [label(16, 32, title, "heading")]
+    body = banner("WAKATIME", "All-time coding")
     token = os.environ.get("WAKATIME_TOKEN")
-    y = 68
+    y = 118
     if not token:
         body.append(label(16, y, "Waiting for WakaTime access.", "meta"))
     else:
@@ -202,8 +227,7 @@ def render_wakatime():
         if lifetime_seconds or observed:
             lagging = observed > lifetime_seconds
             caption = " or more tracked" if lagging else " tracked since joining"
-            body.append(label(16, y, duration(max(lifetime_seconds, observed)) + caption, "name"))
-            y += 28
+            body = banner("WAKATIME  ·  ALL TIME", duration(max(lifetime_seconds, observed)) + caption)
         if observed and (aggregate < observed or not stats.get("languages")):
             # A new account can have daily data before lifetime charts are computed.
             stats = summary_stats(days)
@@ -219,6 +243,7 @@ def render_wakatime():
 
 
 def waka_breakdown(body, y, stats):
+    metrics = []
     for key, caption in (("human_readable_daily_average_including_other_language", "Daily average"),
                          ("ai_prompt_events_total", "AI prompts"), ("ai_sessions", "AI sessions"),
                          ("ai_input_tokens", "Input tokens"), ("ai_output_tokens", "Output tokens"),
@@ -230,8 +255,13 @@ def waka_breakdown(body, y, stats):
             value = f"${value:,.2f}"
         elif isinstance(value, int):
             value = f"{value:,}"
-        body.extend([label(16, y, caption, "meta"), label(464, y, value, anchor="end")])
-        y += 23
+        metrics.append((caption, value))
+    for index, (caption, value) in enumerate(metrics):
+        x = 18 + (index % 2) * 226
+        top = y + (index // 2) * 57
+        body.extend([f'<rect x="{x}" y="{top-12}" width="3" height="35" rx="1.5" fill="#8175d6"/>',
+                     label(x+12, top, caption, "meta"), label(x+12, top+23, value, "name number")])
+    y += ((len(metrics)+1)//2)*57
     best = stats.get("best_day") or {}
     if best.get("date"):
         body.append(label(16, y, f"Best day · {best['date']} · {best.get('text', '')}", "meta"))
@@ -260,11 +290,16 @@ def waka_breakdown(body, y, stats):
 def waka_bars(body, y, heading, rows):
     y += 12
     body.append(label(16, y, heading, "name"))
+    palette = {"Languages": "#287fc1", "Editors": "#895cc7", "Projects": "#188576",
+               "Categories": "#bc6941", "Operating systems": "#5270ba",
+               "Line changes": "#a85492", "AI model line changes": "#765bc7"}
+    color = palette[heading]
     for name, percent, display in rows:
         y += 22
         width = max(0, min(100, percent)) * 1.45
         body.extend([label(16, y, clipped(name, 24)),
-                     f'<rect class="bar" x="240" y="{y-10}" width="{width:.1f}" height="8" rx="4"/>',
+                     f'<rect class="track" x="240" y="{y-10}" width="145" height="8" rx="4"/>',
+                     f'<rect fill="{color}" x="240" y="{y-10}" width="{width:.1f}" height="8" rx="4"/>',
                      label(464, y, display, "meta", "end")])
     return y+24
 
@@ -272,6 +307,6 @@ def waka_bars(body, y, heading, rows):
 owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
 joined, rank = profile_rank(owner)
 today = datetime.now(timezone(timedelta(hours=7))).date()
-history = daily_history(owner, joined, today)
-render_rank_streak(history, joined, today, rank)
+history, repo_count = daily_history(owner, joined, today)
+render_rank_streak(history, joined, today, rank, repo_count)
 render_wakatime()
