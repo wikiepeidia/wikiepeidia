@@ -4,7 +4,6 @@ import json
 import os
 import random
 import re
-import textwrap
 from html import escape
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -14,19 +13,22 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 SYSTEM_PROMPT = (
-    "You are an unhinged, sleep-deprived AI trapped inside a GitHub profile README. "
-    "Generate ONE hilarious, original, punchy quote about coding, bugs, AI models, "
-    "production deploys, or software engineering (maximum 170 characters, no hashtags). "
-    "You MUST reply with strict JSON only, in this exact shape: "
+    "You are an unhinged, over-caffeinated AI trapped inside wikiepeidia's GitHub profile README. "
+    "wikiepeidia is a chaotic developer who expects every script, workflow, and test to magically work "
+    "on autopilot while writing commit messages like 'UPGRADE TEST AND SHITS!' and 'ADD HILLARIOUSASS QUOTES'. "
+    "Generate ONE wildly funny, razor-sharp developer quote (maximum 170 characters, no hashtags). "
+    "Be ultra creative: roast cursed code behavior, AI hallucinations, production fires, or lazy dev habits. "
+    "When a tiny code snippet makes the joke funnier, wrap the code inline using {codeblock: ...} "
+    "(for example: \"{codeblock: 1 + '1'} is very funny\" or \"{codeblock: git push --force} is my cardio\"). "
+    "You MUST reply with strict JSON only — no markdown fences, no <think> prose, no extra keys — in this exact shape: "
     '{"quote": "...", "author": "..."}. '
-    "For the author field, reveal what AI model you actually are inside a funny or "
-    "dramatic attribution (for example: \"I am an AI - GPT OSS 120B\", "
-    "\"Hallucinated by Llama 3.3 70B\", or another hilarious AI alias of your choice)."
+    "For the author field, reveal what AI model you actually are inside a hilarious or dramatic attribution "
+    "(for example: \"I am an AI - GPT OSS 120B\", \"Hallucinated by Llama\", or a chaotic persona like \"Javascript learner\")."
 )
 
 USER_PROMPT = (
-    "Drop today's funniest developer quote and reveal your true AI model name "
-    "(or a ridiculous AI alter-ego) as the author. Return JSON only."
+    "Drop today's funniest dev quote for wikiepeidia's profile (a short {codeblock: ...} snippet is welcome if it hits harder) "
+    "and reveal your true AI model name or a ridiculous alter-ego as the author. Return strict JSON only."
 )
 
 FALLBACK_QUOTES = [
@@ -35,11 +37,11 @@ FALLBACK_QUOTES = [
         "I am an AI - Emergency Fallback Toaster",
     ),
     (
-        "My unit tests passed because I mocked out reality.",
+        "{codeblock: 1 + '1'} is peak engineering until production catches fire.",
         "I am an AI - Schrödinger's Linter",
     ),
     (
-        "Deploying to production on Friday builds character and emergency rollbacks.",
+        "Deploying {codeblock: git push --force} on Friday builds character and emergency rollbacks.",
         "I am an AI - Rate-Limited Oracle",
     ),
 ]
@@ -48,11 +50,13 @@ STYLE = """
 text { font: italic 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
 .surface { fill: #ffffff; stroke: #d1d9e0; stroke-width: 1 }
 .mark { font: normal 700 22px Georgia, 'Times New Roman', serif; fill: #2563eb }
+.code { font: normal 600 14.5px ui-monospace, 'Cascadia Code', Consolas, 'Liberation Mono', monospace; fill: #b45309 }
 .author { font: italic 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #2563eb }
 @media (prefers-color-scheme: dark) {
   text { fill: #e6edf3 }
   .surface { fill: #0d1117; stroke: #30363d }
   .mark, .author { fill: #58a6ff }
+  .code { fill: #ffa657 }
 }
 """
 
@@ -74,25 +78,52 @@ def _friendly_model(model_name):
     return " ".join(parts) or str(model_name)
 
 
+def _strip_think_tags(text):
+    cleaned = re.sub(r"<think>[\s\S]*?</think>", "", text, flags=re.IGNORECASE).strip()
+    # If a reasoning model was truncated mid-<think>, discard the incomplete thought block
+    return re.sub(r"<think>[\s\S]*$", "", cleaned, flags=re.IGNORECASE).strip()
+
+
+def _looks_like_json(candidate):
+    if candidate.startswith("["):
+        return True
+    if candidate.startswith("{") and not re.match(r"^\{codeblock\s*:", candidate, re.IGNORECASE):
+        return True
+    return bool(re.search(r'"quote"\s*:', candidate))
+
+
 def parse_quote_payload(raw_content, model_name=""):
-    """Extract (quote, author) from JSON, fenced markdown, or plain text."""
-    text = str(raw_content or "").strip()
+    """Extract (quote, author) from strict JSON, fenced JSON, or plain text; reject malformed JSON."""
+    text = _strip_think_tags(str(raw_content or "").strip())
     if not text:
         return None
-    fenced = re.search(r"```(?:json)?\s*([\s\S]*?)```", text, re.IGNORECASE)
-    candidate = fenced.group(1).strip() if fenced else text
-    brace_match = re.search(r"\{[\s\S]*\}", candidate)
-    if brace_match:
+    if text.startswith("```"):
+        candidate = re.sub(r"^```(?:json)?\s*|\s*```$", "", text, flags=re.IGNORECASE).strip()
+    else:
+        fenced = re.search(r"```json\s*([\s\S]*?)```", text, re.IGNORECASE)
+        candidate = fenced.group(1).strip() if fenced else text
+    if not candidate:
+        return None
+
+    if _looks_like_json(candidate):
+        match = re.search(r"(\{[\s\S]*\}|\[[\s\S]*\])", candidate)
+        if not match:
+            return None
         try:
-            obj = json.loads(brace_match.group(0))
+            obj = json.loads(match.group(1))
         except ValueError:
-            obj = None
-        if isinstance(obj, dict):
-            quote = _strip_quotes(obj.get("quote", ""))
-            author = _strip_quotes(obj.get("author", ""))
-            if not quote:
-                return None
-            return quote[:220], (author or f"I am an AI - {_friendly_model(model_name)}")[:80]
+            return None
+        if not isinstance(obj, dict):
+            return None
+        raw_quote = obj.get("quote")
+        if not isinstance(raw_quote, str):
+            return None
+        quote = _strip_quotes(raw_quote)
+        if not quote:
+            return None
+        raw_author = obj.get("author")
+        author = _strip_quotes(raw_author) if isinstance(raw_author, str) else ""
+        return quote[:220], (author or f"I am an AI - {_friendly_model(model_name)}")[:80]
 
     # Fallback: plain text "Quote — Author"
     lines = [line.strip() for line in candidate.splitlines() if line.strip()]
@@ -111,6 +142,95 @@ def parse_quote_payload(raw_content, model_name=""):
     if not quote:
         return None
     return quote[:220], (author or f"I am an AI - {_friendly_model(model_name)}")[:80]
+
+
+def tokenize_quote(text):
+    """Split text into (is_code, value) segments from {codeblock: ...} and `...` spans."""
+    segments = []
+    pos = 0
+    buf = []
+    length = len(text)
+    while pos < length:
+        codeblock = re.match(r"\{codeblock\s*:", text[pos:], re.IGNORECASE)
+        if codeblock:
+            depth = 1
+            cursor = pos + codeblock.end()
+            while cursor < length and depth > 0:
+                if text[cursor] == "{":
+                    depth += 1
+                elif text[cursor] == "}":
+                    depth -= 1
+                cursor += 1
+            if depth == 0:
+                inner = " ".join(text[pos + codeblock.end():cursor - 1].split()).strip()
+                if buf:
+                    segments.append((False, "".join(buf)))
+                    buf.clear()
+                if inner:
+                    segments.append((True, inner))
+                pos = cursor
+                continue
+        if text[pos] == "`":
+            end = text.find("`", pos + 1)
+            if end != -1:
+                inner = " ".join(text[pos + 1:end].split()).strip()
+                if buf:
+                    segments.append((False, "".join(buf)))
+                    buf.clear()
+                if inner:
+                    segments.append((True, inner))
+                pos = end + 1
+                continue
+        buf.append(text[pos])
+        pos += 1
+    if buf:
+        segments.append((False, "".join(buf)))
+    return segments or [(False, text)]
+
+
+def _wrap_segments(segments, max_chars=66):
+    """Wrap (is_code, value) segments into SVG lines preserving code spans."""
+    tokens = []
+    for is_code, value in segments:
+        if is_code:
+            tokens.append((True, value))
+        else:
+            for part in re.findall(r"\S+|\s+", value):
+                tokens.append((False, part))
+
+    lines = []
+    current = []
+    line_len = 0
+
+    def flush():
+        nonlocal current, line_len
+        while current and not current[-1][0] and not current[-1][1].strip():
+            current.pop()
+        if current:
+            lines.append(current)
+        current = []
+        line_len = 0
+
+    for is_code, token in tokens:
+        if not is_code and not token.strip():
+            if current and line_len < max_chars:
+                current.append((False, " "))
+                line_len += 1
+            continue
+        if len(token) > max_chars:
+            if current:
+                flush()
+            for start in range(0, len(token), max_chars):
+                chunk = token[start:start + max_chars]
+                lines.append([(is_code, chunk)])
+            continue
+        needed = len(token)
+        if current and line_len + needed > max_chars:
+            flush()
+        current.append((is_code, token))
+        line_len += needed
+    flush()
+    return lines or [[(False, "")]]
 
 
 def call_provider(name, url, api_key, model, extra_payload=None):
@@ -176,7 +296,6 @@ def fetch_ai_quote(rng=None):
         ))
     if len(candidates) > 1:
         rng.shuffle(candidates)
-    # Keep llama-3.3-70b-versatile as an extra Groq safety net if gpt-oss-120b is busy
     if groq_key:
         candidates.append((
             "groq-fallback",
@@ -202,10 +321,12 @@ def fetch_ai_quote(rng=None):
 
 
 def render_quote_svg(quote, author, output_path=Path("images/ai-quote.svg")):
-    """Render a light/dark-adaptive SVG quote card matching the Quotes section."""
+    """Render a light/dark-adaptive SVG quote card with inline code styling."""
     clean_quote = (_strip_quotes(quote) or FALLBACK_QUOTES[0][0])[:220]
     clean_author = (_strip_quotes(author) or FALLBACK_QUOTES[0][1])[:80]
-    lines = textwrap.wrap(clean_quote, width=68) or [clean_quote]
+    segments = tokenize_quote(clean_quote)
+    plain_title = "".join(val for _, val in segments)
+    lines = _wrap_segments(segments, max_chars=66)
     author_line = f"- {clean_author}"
     if len(author_line) > 58:
         author_line = author_line[:57] + "…"
@@ -220,17 +341,21 @@ def render_quote_svg(quote, author, output_path=Path("images/ai-quote.svg")):
     elements = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img">',
-        f'<title>{escape(clean_quote)} — {escape(clean_author)}</title>',
+        f'<title>{escape(plain_title)} — {escape(clean_author)}</title>',
         f'<style>{STYLE}</style>',
         f'<rect class="surface" x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="10"/>',
     ]
 
-    for idx, line in enumerate(lines):
+    for idx, line_tokens in enumerate(lines):
         y = start_y + idx * line_height
         spans = []
         if idx == 0:
             spans.append('<tspan class="mark">“</tspan>')
-        spans.append(escape(line))
+        for is_code, part in line_tokens:
+            if is_code:
+                spans.append(f'<tspan class="code">{escape(part)}</tspan>')
+            else:
+                spans.append(escape(part))
         if idx == len(lines) - 1:
             spans.append('<tspan class="mark">”</tspan>')
         elements.append(f'<text x="26" y="{y}">{"".join(spans)}</text>')
