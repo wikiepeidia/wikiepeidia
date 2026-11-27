@@ -2,7 +2,7 @@ name: Generate GitHub profile metrics
 
 on:
   schedule:
-    - cron: '23 0 * * *'
+    - cron: '23 */6 * * *'
   workflow_dispatch:
   push:
     branches: [main]
