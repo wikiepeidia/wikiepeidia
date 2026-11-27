@@ -9,7 +9,6 @@ from html import escape
 from pathlib import Path
 from urllib.error import URLError
 from urllib.request import Request, urlopen
-from textwrap import wrap
 
 
 STYLE = """
@@ -31,10 +30,6 @@ def label(x, y, value, style="", anchor="start"):
             f'{escape(str(value))}</text>')
 
 
-def rule(y):
-    return f'<path class="rule" d="M16 {y} H464"/>'
-
-
 def save(filename, title, body, height):
     svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="{height}" '
            f'viewBox="0 0 480 {height}" role="img"><title>{title}</title>',
@@ -46,24 +41,12 @@ def clipped(value, limit):
     return value if len(value) <= limit else value[:limit - 1] + "…"
 
 
-def public_contributions(owner):
-    fields = {"commits": "commit", "issues": "issue", "PRs": "pullRequest",
-              "reviews": "pullRequestReview"}
-    selections = " ".join(
-        f"{label}: {field}ContributionsByRepository(maxRepositories: 100) "
-        "{ repository { nameWithOwner isPrivate } contributions { totalCount } }"
-        for label, field in fields.items()
-    )
-    query = ("query($login:String!) { user(login:$login) { createdAt followers { totalCount } "
-             "pullRequests { totalCount } issues { totalCount } contributionsCollection { "
-             + selections + " totalPullRequestReviewContributions } } }")
+def profile_rank(owner):
+    query = """query($login:String!) { user(login:$login) {
+      createdAt followers { totalCount } pullRequests { totalCount } issues { totalCount }
+      contributionsCollection { totalPullRequestReviewContributions }
+    } }"""
     user = graphql_user(owner, query)
-    counts = defaultdict(Counter)
-    collection = user["contributionsCollection"]
-    for kind in fields:
-        for row in collection[kind]:
-            if not row["repository"]["isPrivate"]:
-                counts[row["repository"]["nameWithOwner"]][kind] = row["contributions"]["totalCount"]
     commits = json.loads(subprocess.check_output(
         ["gh", "api", f"search/commits?q=author:{owner}&per_page=1"]))
     if commits.get("incomplete_results"):
@@ -72,9 +55,9 @@ def public_contributions(owner):
         ["gh", "api", "--paginate", "--slurp", f"users/{owner}/repos?type=owner&per_page=100"]))
     stars = sum(repo["stargazers_count"] for page in repos for repo in page if not repo["private"])
     rank = readme_rank(commits["total_count"], user["pullRequests"]["totalCount"],
-                      user["issues"]["totalCount"], collection["totalPullRequestReviewContributions"],
+                      user["issues"]["totalCount"], user["contributionsCollection"]["totalPullRequestReviewContributions"],
                       stars, user["followers"]["totalCount"])
-    return counts, date.fromisoformat(user["createdAt"][:10]), rank
+    return date.fromisoformat(user["createdAt"][:10]), rank
 
 
 def graphql_user(owner, query, *variables):
@@ -98,7 +81,7 @@ def readme_rank(commits, prs, issues, reviews, stars, followers):
 def daily_history(owner, joined, today):
     query = """query($login:String!, $from:DateTime!, $to:DateTime!) {
       user(login:$login) { contributionsCollection(from:$from, to:$to) {
-        contributionCalendar { weeks { contributionDays { date contributionCount color } } }
+        contributionCalendar { weeks { contributionDays { date contributionCount } } }
       } }
     }"""
     history = {}
@@ -110,70 +93,38 @@ def daily_history(owner, joined, today):
             for day in week["contributionDays"]:
                 when = date.fromisoformat(day["date"])
                 if start <= when <= end:
-                    history[when] = day
+                    history[when] = day["contributionCount"]
     return history
 
 
-def lifetime_panel(history, joined, today, rank):
+def render_rank_streak(history, joined, today, rank):
     total = run = current = longest = 0
     body = []
     for offset in range((today - joined).days + 1):
         day = joined + timedelta(days=offset)
-        count = history.get(day, {}).get("contributionCount", 0)
+        count = history.get(day, 0)
         total += count
         run = run + 1 if count else 0
         longest = max(longest, run)
         if day == today - timedelta(days=1) or (day == today and count):
             current = run
-    body.extend([label(16, 32, "Lifetime contributions", "heading"),
-                 label(16, 56, f"{total:,} contributions since {joined:%b %Y}", "meta"),
-                 label(16, 84, f"README rank: {rank}    ·    Streak: {current}d    ·    Best: {longest}d", "name")])
-    y = 106
-    for year in range(today.year, joined.year-1, -1):
-        body.append(label(16, y+27, year, "meta"))
-        jan = date(year, 1, 1)
-        sunday_offset = (jan.weekday()+1) % 7
-        for day, entry in history.items():
-            if day.year != year:
-                continue
-            week, weekday = divmod((day-jan).days + sunday_offset, 7)
-            body.append(f'<rect x="{62 + week*7.5}" y="{y + weekday*7}" width="6.5" height="6" '
-                        f'rx="1" fill="{entry["color"]}"><title>{day}: '
-                        f'{entry["contributionCount"]} contributions</title></rect>')
-        y += 60
-    return body, y
-
-
-def render_activity(events, contributions, history, joined, today, rank, profile_repo):
-    recent = Counter()
-    created_repos = set()
-    for event in sorted(events, key=lambda item: item["created_at"], reverse=True):
-        repo = event["repo"]["name"]
-        kind = event["type"]
-        recent[repo] += 1
-        if kind == "CreateEvent" and event["payload"].get("ref_type") == "repository":
-            created_repos.add(repo)
-
-    body, y = lifetime_panel(history, joined, today, rank)
-    body.append(label(16, y+20, "Profile and recent repositories", "heading"))
-    body.append(label(16, y+45, "Past year’s contributions · recent public event counts", "meta"))
-    y += 82
-    # First appearance records the newest event for each distinct repository.
-    repos = [profile_repo, *[repo for repo in recent if repo.casefold() != profile_repo.casefold()][:5]]
-    for repo in repos:
-        details = [f"{count} {kind}" for kind, count in contributions.get(repo, {}).items() if count]
-        if repo in created_repos:
-            details.insert(0, "Created repository")
-        details.append(f"{recent[repo]} recent event{'s' if recent[repo] != 1 else ''}")
-        for line in wrap(repo, width=41):
-            body.append(label(16, y, line, "name"))
-            y += 22
-        for line in wrap(" · ".join(details), width=58):
-            body.append(label(16, y, line, "meta"))
-            y += 20
-        body.append(rule(y-6))
-        y += 20
-    save("metrics-activity.svg", "Daily contributions and recent activity", body, y-8)
+    body.extend([label(16, 30, "GitHub README rank", "heading"),
+                 label(16, 55, f"{total:,} contributions since {joined:%b %Y}", "meta")])
+    for index, grade in enumerate(("C", "C+", "B-", "B", "B+", "A-", "A", "A+", "S")):
+        x = 16 + index * 50
+        if grade == rank:
+            body.append(f'<rect x="{x}" y="68" width="44" height="32" rx="8" fill="#166534"/>')
+            body.append(f'<text x="{x+22}" y="90" text-anchor="middle" style="fill:white;font-weight:700">{grade}</text>')
+        else:
+            body.append(label(x+22, 90, grade, "meta", "middle"))
+    body.append(label(16, 138, "Contribution streak", "heading"))
+    for y, caption, days in ((171, "Current", current), (202, "Longest", longest)):
+        body.append(label(16, y, caption))
+        body.append(f'<rect x="95" y="{y-12}" width="272" height="10" rx="5" fill="#888" opacity=".22"/>')
+        width = 272 * days / max(longest, 1)
+        body.append(f'<rect class="bar" x="95" y="{y-12}" width="{width:.1f}" height="10" rx="5"/>')
+        body.append(label(464, y, f"{days} day" if days == 1 else f"{days} days", "name", "end"))
+    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 222)
 
 
 def waka_data(endpoint, token):
@@ -319,11 +270,8 @@ def waka_bars(body, y, heading, rows):
 
 
 owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
-pages = json.loads(subprocess.check_output(
-    ["gh", "api", "--paginate", "--slurp", f"users/{owner}/events/public?per_page=100"]))
-events = {event["id"]: event for page in pages for event in page}
-contributions, joined, rank = public_contributions(owner)
+joined, rank = profile_rank(owner)
 today = datetime.now(timezone(timedelta(hours=7))).date()
 history = daily_history(owner, joined, today)
-render_activity(events.values(), contributions, history, joined, today, rank, f"{owner}/{owner}")
+render_rank_streak(history, joined, today, rank)
 render_wakatime()

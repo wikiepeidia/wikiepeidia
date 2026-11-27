@@ -22,11 +22,11 @@ Here are some ideas to get you started
 ## GitHub Stats
 
 <table>
-<tr><th>GitHub overview and activity</th><th>WakaTime</th></tr>
+<tr><th>GitHub overview</th><th>WakaTime</th></tr>
 <tr>
 <td width="50%" valign="top">
 <img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-overview.svg" alt="GitHub overview, contribution calendar, streak, and top languages"><br>
-<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-activity.svg" alt="Daily GitHub contribution heatmap and recent activity">
+<img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-activity.svg" alt="GitHub README rank, current streak, and longest streak">
 </td>
 <td width="50%" valign="top">
 <img src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/metrics-output/images/metrics-wakatime.svg" alt="All-time WakaTime coding activity and AI usage">
@@ -36,6 +36,13 @@ Here are some ideas to get you started
 <picture>
   <source srcset="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph-dark.svg" media="(prefers-color-scheme: dark)" />
   <img alt="Pacman Contribution Graph" src="https://raw.githubusercontent.com/wikiepeidia/wikiepeidia/output/pacman-contribution-graph.svg" />
+</picture>
+</td></tr>
+<tr><td colspan="2" align="center">
+<picture>
+  <source srcset="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&amp;bg_color=0d1117&amp;color=9be9a8&amp;line=4c8eda&amp;point=38d252&amp;area=true&amp;hide_border=true" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&amp;bg_color=ffffff&amp;color=000000&amp;line=9be9a8&amp;point=40c463&amp;area=true&amp;hide_border=true" media="(prefers-color-scheme: light)" />
+  <img alt="Activity Graph" src="https://github-readme-activity-graph.vercel.app/graph?username=wikiepeidia&amp;bg_color=ffffff&amp;color=000000&amp;line=9be9a8&amp;point=40c463&amp;area=true&amp;hide_border=true" />
 </picture>
 </td></tr>
 </table>
