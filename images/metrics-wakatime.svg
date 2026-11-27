@@ -12,20 +12,20 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 }
 </style>
 <text x="16" y="32" class="heading" text-anchor="start">WakaTime · all time</text>
-<text x="16" y="68" class="name" text-anchor="start">1h 17m or more tracked · lifetime total updating</text>
+<text x="16" y="68" class="name" text-anchor="start">1h 40m tracked since joining</text>
 <text x="16" y="96" class="meta" text-anchor="start">Recorded breakdown · 2026-11-26 to 2026-11-27</text>
 <text x="16" y="122" class="meta" text-anchor="start">Daily average</text>
-<text x="464" y="122" class="" text-anchor="end">38 min</text>
+<text x="464" y="122" class="" text-anchor="end">46 min</text>
 <text x="16" y="145" class="meta" text-anchor="start">AI prompts</text>
-<text x="464" y="145" class="" text-anchor="end">20</text>
+<text x="464" y="145" class="" text-anchor="end">23</text>
 <text x="16" y="168" class="meta" text-anchor="start">AI sessions</text>
 <text x="464" y="168" class="" text-anchor="end">2</text>
 <text x="16" y="191" class="meta" text-anchor="start">Input tokens</text>
-<text x="464" y="191" class="" text-anchor="end">264,258</text>
+<text x="464" y="191" class="" text-anchor="end">278,717</text>
 <text x="16" y="214" class="meta" text-anchor="start">Output tokens</text>
-<text x="464" y="214" class="" text-anchor="end">18,383</text>
+<text x="464" y="214" class="" text-anchor="end">22,268</text>
 <text x="16" y="237" class="meta" text-anchor="start">Estimated AI spend</text>
-<text x="464" y="237" class="" text-anchor="end">$8.31</text>
+<text x="464" y="237" class="" text-anchor="end">$9.63</text>
 <text x="16" y="260" class="meta" text-anchor="start">Best day · 2026-11-26 · 1h 13m</text>
 <text x="16" y="296" class="name" text-anchor="start">Line changes</text>
 <text x="16" y="318" class="" text-anchor="start">AI</text>
@@ -40,38 +40,38 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <text x="464" y="398" class="meta" text-anchor="end">49</text>
 <text x="16" y="434" class="name" text-anchor="start">Languages</text>
 <text x="16" y="456" class="" text-anchor="start">YAML</text>
-<rect class="bar" x="240" y="446" width="73.1" height="8" rx="4"/>
-<text x="464" y="456" class="meta" text-anchor="end">50%</text>
+<rect class="bar" x="240" y="446" width="60.5" height="8" rx="4"/>
+<text x="464" y="456" class="meta" text-anchor="end">42%</text>
 <text x="16" y="478" class="" text-anchor="start">Python</text>
-<rect class="bar" x="240" y="468" width="43.0" height="8" rx="4"/>
-<text x="464" y="478" class="meta" text-anchor="end">30%</text>
+<rect class="bar" x="240" y="468" width="58.1" height="8" rx="4"/>
+<text x="464" y="478" class="meta" text-anchor="end">40%</text>
 <text x="16" y="500" class="" text-anchor="start">Markdown</text>
-<rect class="bar" x="240" y="490" width="25.3" height="8" rx="4"/>
-<text x="464" y="500" class="meta" text-anchor="end">17%</text>
+<rect class="bar" x="240" y="490" width="21.0" height="8" rx="4"/>
+<text x="464" y="500" class="meta" text-anchor="end">14%</text>
 <text x="16" y="522" class="" text-anchor="start">Other</text>
-<rect class="bar" x="240" y="512" width="3.5" height="8" rx="4"/>
-<text x="464" y="522" class="meta" text-anchor="end">2%</text>
+<rect class="bar" x="240" y="512" width="5.5" height="8" rx="4"/>
+<text x="464" y="522" class="meta" text-anchor="end">4%</text>
 <text x="16" y="558" class="name" text-anchor="start">Editors</text>
 <text x="16" y="580" class="" text-anchor="start">VS Code</text>
-<rect class="bar" x="240" y="570" width="84.0" height="8" rx="4"/>
-<text x="464" y="580" class="meta" text-anchor="end">58%</text>
+<rect class="bar" x="240" y="570" width="93.0" height="8" rx="4"/>
+<text x="464" y="580" class="meta" text-anchor="end">64%</text>
 <text x="16" y="602" class="" text-anchor="start">Codex Vscode</text>
-<rect class="bar" x="240" y="592" width="61.0" height="8" rx="4"/>
-<text x="464" y="602" class="meta" text-anchor="end">42%</text>
+<rect class="bar" x="240" y="592" width="52.0" height="8" rx="4"/>
+<text x="464" y="602" class="meta" text-anchor="end">36%</text>
 <text x="16" y="638" class="name" text-anchor="start">Projects</text>
 <text x="16" y="660" class="" text-anchor="start">wikiepeidia</text>
 <rect class="bar" x="240" y="650" width="145.0" height="8" rx="4"/>
 <text x="464" y="660" class="meta" text-anchor="end">100%</text>
 <text x="16" y="696" class="name" text-anchor="start">Categories</text>
 <text x="16" y="718" class="" text-anchor="start">AI Coding</text>
-<rect class="bar" x="240" y="708" width="129.3" height="8" rx="4"/>
-<text x="464" y="718" class="meta" text-anchor="end">89%</text>
+<rect class="bar" x="240" y="708" width="113.3" height="8" rx="4"/>
+<text x="464" y="718" class="meta" text-anchor="end">78%</text>
 <text x="16" y="740" class="" text-anchor="start">Coding</text>
-<rect class="bar" x="240" y="730" width="13.3" height="8" rx="4"/>
-<text x="464" y="740" class="meta" text-anchor="end">9%</text>
+<rect class="bar" x="240" y="730" width="29.7" height="8" rx="4"/>
+<text x="464" y="740" class="meta" text-anchor="end">20%</text>
 <text x="16" y="762" class="" text-anchor="start">Writing Docs</text>
-<rect class="bar" x="240" y="752" width="2.4" height="8" rx="4"/>
-<text x="464" y="762" class="meta" text-anchor="end">2%</text>
+<rect class="bar" x="240" y="752" width="2.0" height="8" rx="4"/>
+<text x="464" y="762" class="meta" text-anchor="end">1%</text>
 <text x="16" y="798" class="name" text-anchor="start">Operating systems</text>
 <text x="16" y="820" class="" text-anchor="start">Windows</text>
 <rect class="bar" x="240" y="810" width="145.0" height="8" rx="4"/>
