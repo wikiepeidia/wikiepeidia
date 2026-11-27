@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="989" viewBox="0 0 480 989" role="img"><title>WakaTime · all time</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="1011" viewBox="0 0 480 1011" role="img"><title>WakaTime · all time</title>
 <style>
 text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
 .heading { font-size: 21px; font-weight: 650 }
@@ -14,11 +14,11 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 }
 </style>
 <defs><linearGradient id="ink" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#153f78"/><stop offset="1" stop-color="#55328b"/></linearGradient></defs>
-<rect class="surface" width="480" height="989" rx="14"/>
+<rect class="surface" width="480" height="1011" rx="14"/>
 <rect width="480" height="86" rx="14" fill="url(#ink)"/>
 <path d="M335 85 L403 17 L471 85 M376 85 L443 18 L480 55" fill="none" stroke="#aba9ff" stroke-opacity=".26" stroke-width="3"/>
 <text x="18" y="28" class="kicker" text-anchor="start">WAKATIME  ·  ALL TIME</text>
-<text x="18" y="64" class="hero" text-anchor="start">3h 17m tracked since joining</text>
+<text x="18" y="64" class="hero" text-anchor="start">3h 35m tracked since joining</text>
 <rect x="18" y="106" width="3" height="54" rx="1.5" fill="#8175d6"/>
 <text x="30" y="118" class="meta" text-anchor="start">Recorded breakdown</text>
 <text x="30" y="141" class="name number" text-anchor="start">26/11/2026 –</text>
@@ -26,13 +26,13 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <rect x="244" y="106" width="3" height="54" rx="1.5" fill="#8175d6"/>
 <text x="256" y="118" class="meta" text-anchor="start">Best day</text>
 <text x="256" y="141" class="name number" text-anchor="start">27/11/2026</text>
-<text x="256" y="160" class="meta" text-anchor="start">1h 56m</text>
+<text x="256" y="160" class="meta" text-anchor="start">2h 14m</text>
 <rect x="18" y="182" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="30" y="194" class="meta" text-anchor="start">Daily average</text>
-<text x="30" y="217" class="name number" text-anchor="start">1h 35m</text>
+<text x="30" y="217" class="name number" text-anchor="start">1h 44m</text>
 <rect x="244" y="182" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="256" y="194" class="meta" text-anchor="start">AI prompts</text>
-<text x="256" y="217" class="name number" text-anchor="start">40</text>
+<text x="256" y="217" class="name number" text-anchor="start">45</text>
 <rect x="18" y="239" width="3" height="35" rx="1.5" fill="#8175d6"/>
 <text x="30" y="251" class="meta" text-anchor="start">AI sessions</text>
 <text x="30" y="274" class="name number" text-anchor="start">7</text>
@@ -62,58 +62,62 @@ text { font: 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fil
 <text x="16" y="515" class="name" text-anchor="start">Languages</text>
 <text x="16" y="537" class="" text-anchor="start">Python</text>
 <rect class="track" x="240" y="527" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="527" width="53.6" height="8" rx="4"/>
-<text x="464" y="537" class="meta" text-anchor="end">37%</text>
+<rect fill="#287fc1" x="240" y="527" width="56.6" height="8" rx="4"/>
+<text x="464" y="537" class="meta" text-anchor="end">39%</text>
 <text x="16" y="559" class="" text-anchor="start">YAML</text>
 <rect class="track" x="240" y="549" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="549" width="38.1" height="8" rx="4"/>
-<text x="464" y="559" class="meta" text-anchor="end">26%</text>
+<rect fill="#287fc1" x="240" y="549" width="34.8" height="8" rx="4"/>
+<text x="464" y="559" class="meta" text-anchor="end">24%</text>
 <text x="16" y="581" class="" text-anchor="start">Other</text>
 <rect class="track" x="240" y="571" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="571" width="28.3" height="8" rx="4"/>
-<text x="464" y="581" class="meta" text-anchor="end">19%</text>
+<rect fill="#287fc1" x="240" y="571" width="30.1" height="8" rx="4"/>
+<text x="464" y="581" class="meta" text-anchor="end">21%</text>
 <text x="16" y="603" class="" text-anchor="start">Markdown</text>
 <rect class="track" x="240" y="593" width="145" height="8" rx="4"/>
-<rect fill="#287fc1" x="240" y="593" width="25.0" height="8" rx="4"/>
-<text x="464" y="603" class="meta" text-anchor="end">17%</text>
-<text x="16" y="639" class="name" text-anchor="start">Editors</text>
-<text x="16" y="661" class="" text-anchor="start">VS Code</text>
-<rect class="track" x="240" y="651" width="145" height="8" rx="4"/>
-<rect fill="#895cc7" x="240" y="651" width="76.3" height="8" rx="4"/>
-<text x="464" y="661" class="meta" text-anchor="end">53%</text>
-<text x="16" y="683" class="" text-anchor="start">Codex Vscode</text>
+<rect fill="#287fc1" x="240" y="593" width="23.5" height="8" rx="4"/>
+<text x="464" y="603" class="meta" text-anchor="end">16%</text>
+<text x="16" y="625" class="" text-anchor="start">Git Config</text>
+<rect class="track" x="240" y="615" width="145" height="8" rx="4"/>
+<rect fill="#287fc1" x="240" y="615" width="0.0" height="8" rx="4"/>
+<text x="464" y="625" class="meta" text-anchor="end">0%</text>
+<text x="16" y="661" class="name" text-anchor="start">Editors</text>
+<text x="16" y="683" class="" text-anchor="start">VS Code</text>
 <rect class="track" x="240" y="673" width="145" height="8" rx="4"/>
-<rect fill="#895cc7" x="240" y="673" width="65.8" height="8" rx="4"/>
-<text x="464" y="683" class="meta" text-anchor="end">45%</text>
-<text x="16" y="705" class="" text-anchor="start">Antigravity Desktop</text>
+<rect fill="#895cc7" x="240" y="673" width="82.3" height="8" rx="4"/>
+<text x="464" y="683" class="meta" text-anchor="end">57%</text>
+<text x="16" y="705" class="" text-anchor="start">Codex Vscode</text>
 <rect class="track" x="240" y="695" width="145" height="8" rx="4"/>
-<rect fill="#895cc7" x="240" y="695" width="2.9" height="8" rx="4"/>
-<text x="464" y="705" class="meta" text-anchor="end">2%</text>
-<text x="16" y="741" class="name" text-anchor="start">Projects</text>
-<text x="16" y="763" class="" text-anchor="start">wikiepeidia</text>
-<rect class="track" x="240" y="753" width="145" height="8" rx="4"/>
-<rect fill="#188576" x="240" y="753" width="137.7" height="8" rx="4"/>
-<text x="464" y="763" class="meta" text-anchor="end">95%</text>
-<text x="16" y="785" class="" text-anchor="start">ANSER_AI_Logistics</text>
+<rect fill="#895cc7" x="240" y="695" width="60.1" height="8" rx="4"/>
+<text x="464" y="705" class="meta" text-anchor="end">41%</text>
+<text x="16" y="727" class="" text-anchor="start">Antigravity Desktop</text>
+<rect class="track" x="240" y="717" width="145" height="8" rx="4"/>
+<rect fill="#895cc7" x="240" y="717" width="2.7" height="8" rx="4"/>
+<text x="464" y="727" class="meta" text-anchor="end">2%</text>
+<text x="16" y="763" class="name" text-anchor="start">Projects</text>
+<text x="16" y="785" class="" text-anchor="start">wikiepeidia</text>
 <rect class="track" x="240" y="775" width="145" height="8" rx="4"/>
-<rect fill="#188576" x="240" y="775" width="7.3" height="8" rx="4"/>
-<text x="464" y="785" class="meta" text-anchor="end">5%</text>
-<text x="16" y="821" class="name" text-anchor="start">Categories</text>
-<text x="16" y="843" class="" text-anchor="start">AI Coding</text>
-<rect class="track" x="240" y="833" width="145" height="8" rx="4"/>
-<rect fill="#bc6941" x="240" y="833" width="129.5" height="8" rx="4"/>
-<text x="464" y="843" class="meta" text-anchor="end">89%</text>
-<text x="16" y="865" class="" text-anchor="start">Coding</text>
+<rect fill="#188576" x="240" y="775" width="138.3" height="8" rx="4"/>
+<text x="464" y="785" class="meta" text-anchor="end">95%</text>
+<text x="16" y="807" class="" text-anchor="start">ANSER_AI_Logistics</text>
+<rect class="track" x="240" y="797" width="145" height="8" rx="4"/>
+<rect fill="#188576" x="240" y="797" width="6.7" height="8" rx="4"/>
+<text x="464" y="807" class="meta" text-anchor="end">5%</text>
+<text x="16" y="843" class="name" text-anchor="start">Categories</text>
+<text x="16" y="865" class="" text-anchor="start">AI Coding</text>
 <rect class="track" x="240" y="855" width="145" height="8" rx="4"/>
-<rect fill="#bc6941" x="240" y="855" width="14.5" height="8" rx="4"/>
-<text x="464" y="865" class="meta" text-anchor="end">10%</text>
-<text x="16" y="887" class="" text-anchor="start">Writing Docs</text>
+<rect fill="#bc6941" x="240" y="855" width="130.8" height="8" rx="4"/>
+<text x="464" y="865" class="meta" text-anchor="end">90%</text>
+<text x="16" y="887" class="" text-anchor="start">Coding</text>
 <rect class="track" x="240" y="877" width="145" height="8" rx="4"/>
-<rect fill="#bc6941" x="240" y="877" width="1.0" height="8" rx="4"/>
-<text x="464" y="887" class="meta" text-anchor="end">1%</text>
-<text x="16" y="923" class="name" text-anchor="start">Operating systems</text>
-<text x="16" y="945" class="" text-anchor="start">Windows</text>
-<rect class="track" x="240" y="935" width="145" height="8" rx="4"/>
-<rect fill="#5270ba" x="240" y="935" width="145.0" height="8" rx="4"/>
-<text x="464" y="945" class="meta" text-anchor="end">100%</text>
+<rect fill="#bc6941" x="240" y="877" width="13.3" height="8" rx="4"/>
+<text x="464" y="887" class="meta" text-anchor="end">9%</text>
+<text x="16" y="909" class="" text-anchor="start">Writing Docs</text>
+<rect class="track" x="240" y="899" width="145" height="8" rx="4"/>
+<rect fill="#bc6941" x="240" y="899" width="0.9" height="8" rx="4"/>
+<text x="464" y="909" class="meta" text-anchor="end">1%</text>
+<text x="16" y="945" class="name" text-anchor="start">Operating systems</text>
+<text x="16" y="967" class="" text-anchor="start">Windows</text>
+<rect class="track" x="240" y="957" width="145" height="8" rx="4"/>
+<rect fill="#5270ba" x="240" y="957" width="145.0" height="8" rx="4"/>
+<text x="464" y="967" class="meta" text-anchor="end">100%</text>
 </svg>
