@@ -122,6 +122,20 @@ def daily_history(owner, joined, today):
     return history, f"{len(repositories)}{'+' if capped else ''}"
 
 
+RANK_THEMES = {
+    # grade: (gradient, accent, badge, current, longest)
+    "C":  (("#2c3440", "#4b5563"), "#cbd5e1", "#4b5563", "#64748b", "#94a3b8"),
+    "C+": (("#223548", "#3a5a78"), "#bae6fd", "#3a5a78", "#4f759b", "#7298bd"),
+    "B-": (("#502820", "#864413"), "#ffda85", "#864413", "#aa5823", "#c1841b"),
+    "B":  (("#14452f", "#1a6b42"), "#86efac", "#1a6b42", "#228b54", "#34b371"),
+    "B+": (("#114b52", "#156e78"), "#99f6e4", "#156e78", "#1a8a96", "#2cb1bc"),
+    "A-": (("#16346e", "#1d4ed8"), "#bfdbfe", "#1d4ed8", "#2563eb", "#3b82f6"),
+    "A":  (("#3b1d6a", "#6d28d9"), "#ddd6fe", "#6d28d9", "#7c3aed", "#a78bfa"),
+    "A+": (("#64142d", "#be185d"), "#fbcfe8", "#be185d", "#db2777", "#f472b6"),
+    "S":  (("#5c3d00", "#b37400"), "#fef08a", "#9a6300", "#d99000", "#eab308"),
+}
+
+
 def render_rank_streak(history, joined, today, rank):
     total = run = current = longest = 0
     best_end = None
@@ -134,16 +148,17 @@ def render_rank_streak(history, joined, today, rank):
             longest, best_end = run, day
         if day == today - timedelta(days=1) or (day == today and count):
             current = run
-    body = banner("GITHUB README RANK", f"Grade {rank}", "#ffda85")
+    gradient, accent, badge, current_color, longest_color = RANK_THEMES.get(rank, RANK_THEMES["B-"])
+    body = banner("GITHUB README RANK", f"Grade {rank}", accent)
     body.append(label(18, 116, f"{total:,} contributions since {joined.day} {joined:%b %Y}", "name"))
     for index, grade in enumerate(("C", "C+", "B-", "B", "B+", "A-", "A", "A+", "S")):
         x = 18 + index * 50
         active = grade == rank
-        fill = 'fill="#864413"' if active else 'class="track"'
+        fill = f'fill="{badge}"' if active else 'class="track"'
         body.append(f'<rect x="{x}" y="133" width="42" height="30" rx="8" {fill}/>')
         body.append(label(x+21, 154, grade, "kicker" if active else "number", "middle"))
     body.append(label(18, 200, "Contribution streak", "heading"))
-    for y, caption, days, color in ((233, "Current", current, "#aa5823"), (266, "Longest", longest, "#c1841b")):
+    for y, caption, days, color in ((233, "Current", current, current_color), (266, "Longest", longest, longest_color)):
         body.append(label(18, y, caption))
         body.append(f'<rect class="track" x="109" y="{y-11}" width="245" height="9" rx="4"/>')
         width = 245 * days / max(longest, 1)
@@ -152,7 +167,7 @@ def render_rank_streak(history, joined, today, rank):
     if best_end:
         best_start = best_end - timedelta(days=longest - 1)
         body.append(label(18, 298, f"Best streak  ·  {best_start:%d %b %Y} – {best_end:%d %b %Y}", "meta"))
-    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 319, ("#502820", "#864413"))
+    save("metrics-activity.svg", f"README rank {rank}, current streak {current} days, best {longest} days", body, 319, gradient)
 
 
 def waka_data(endpoint, token):
