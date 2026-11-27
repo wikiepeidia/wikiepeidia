@@ -177,12 +177,24 @@ def waka_optional(endpoint, token, default):
         return default
 
 
+def cached_tokens(totals):
+    if totals.get("ai_cached_input_tokens") is not None:
+        return totals["ai_cached_input_tokens"]
+    models = totals.get("ai_model_breakdown")
+    if models and all(model.get("cached_input_tokens") is not None for model in models):
+        return sum(model["cached_input_tokens"] for model in models)
+    return None
+
+
 def summary_stats(days):
     """Combine daily totals and weight chart percentages by tracked seconds."""
     stats = {}
     models = Counter()
     sections = defaultdict(Counter)
     active = []
+    cache_reported = False
+    cache_complete = True
+    cache_total = 0
     for day in days:
         totals = day["grand_total"]
         seconds = totals["total_seconds"]
@@ -193,10 +205,18 @@ def summary_stats(days):
                     "ai_output_tokens", "ai_model_total_cost"):
             if totals.get(key) is not None:
                 stats[key] = stats.get(key, 0) + totals[key]
+        cached = cached_tokens(totals)
+        if cached is not None:
+            cache_reported = True
+            cache_total += cached
+        elif totals.get("ai_input_tokens") or totals.get("ai_sessions") or totals.get("ai_model_breakdown"):
+            cache_complete = False
         models.update(totals.get("ai_model_line_changes") or {})
         for section in ("languages", "editors", "projects", "categories", "operating_systems"):
             for row in day.get(section) or []:
                 sections[section][row["name"]] += row["total_seconds"]
+    if cache_reported and cache_complete:
+        stats["ai_cached_input_tokens"] = cache_total
     stats["ai_model_line_changes"] = models
     for key, counts in sections.items():
         total = sum(counts.values())
@@ -232,6 +252,7 @@ def render_wakatime():
             caption = " or more tracked" if lagging else " tracked since joining"
             body = banner("WAKATIME  ·  ALL TIME", duration(max(lifetime_seconds, observed)) + caption)
         period = None
+        recent_tokens = None
         if observed and (aggregate < observed or not stats.get("languages")):
             stats = summary_stats(days)
             first = min(day["range"]["date"] for day in days if day["grand_total"]["total_seconds"])
@@ -243,7 +264,10 @@ def render_wakatime():
                 period = tuple(datetime.fromisoformat(stats[key].replace("Z", "+00:00")).astimezone(local).date()
                                for key in ("start", "end"))
             # Today's summary can beat a record before WakaTime refreshes its lifetime cache.
-            recent_best = summary_stats(days).get("best_day")
+            recent = summary_stats(days)
+            recent_best = recent.get("best_day")
+            if cached_tokens(stats) is None and cached_tokens(recent) is not None:
+                recent_tokens = recent
             cached_best = stats.get("best_day") or {}
             if recent_best and recent_best["total_seconds"] > cached_best.get("total_seconds", float("inf")):
                 stats["best_day"] = recent_best
@@ -251,7 +275,7 @@ def render_wakatime():
             body.append(label(16, y, "Waiting for recorded coding activity.", "meta"))
             stats = {}
             y += 24
-        y = waka_breakdown(body, y, stats, period)
+        y = waka_breakdown(body, y, stats, period, recent_tokens)
     save("metrics-wakatime.svg", title, body, y+20)
 
 
@@ -271,7 +295,7 @@ def spend_vnd(usd):
     return "Unavailable"
 
 
-def waka_breakdown(body, y, stats, period=None):
+def waka_breakdown(body, y, stats, period=None, recent_tokens=None):
     metrics = []
     if period:
         metrics.append(("Recorded breakdown", f"{period[0]:%d/%m/%Y} –", f"{period[1]:%d/%m/%Y}"))
@@ -280,7 +304,6 @@ def waka_breakdown(body, y, stats, period=None):
         metrics.append(("Best day", f"{date.fromisoformat(best['date']):%d/%m/%Y}", best.get("text")))
     for key, caption in (("human_readable_daily_average_including_other_language", "Daily average"),
                          ("ai_prompt_events_total", "AI prompts"), ("ai_sessions", "AI sessions"),
-                         ("ai_input_tokens", "Input tokens"), ("ai_output_tokens", "Output tokens"),
                          ("ai_model_total_cost", "Estimated AI spend")):
         value = stats.get(key)
         if value is None:
@@ -290,6 +313,14 @@ def waka_breakdown(body, y, stats, period=None):
         elif isinstance(value, int):
             value = f"{value:,}"
         metrics.append((caption, value, None))
+    tokens = recent_tokens if recent_tokens is not None else stats
+    parts = (tokens.get("ai_input_tokens"), cached_tokens(tokens), tokens.get("ai_output_tokens"))
+    suffix = " · 7 days" if recent_tokens is not None else ""
+    if all(value is not None for value in parts):
+        metrics.append(("Total tokens" + suffix, f"{sum(parts):,}", None))
+    for caption, value in zip(("Uncached input", "Cached input", "Output tokens"), parts):
+        if value is not None:
+            metrics.append((caption + suffix, f"{value:,}", None))
     for index in range(0, len(metrics), 2):
         row = metrics[index:index+2]
         height = 54 if any(detail for _, _, detail in row) else 35
