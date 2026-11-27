@@ -249,6 +249,22 @@ def render_wakatime():
     save("metrics-wakatime.svg", title, body, y+20)
 
 
+def spend_vnd(usd):
+    if usd == 0:
+        return "0 VND"
+    for base in ("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest",
+                 "https://latest.currency-api.pages.dev"):
+        try:
+            with urlopen(f"{base}/v1/currencies/usd.min.json", timeout=8) as response:
+                rate = json.load(response)["usd"]["vnd"]
+            if rate > 0:
+                return f"{usd * rate:,.0f} VND"
+        except (URLError, TimeoutError, KeyError, ValueError, TypeError):
+            continue
+    print("::warning::USD/VND rate unavailable.")
+    return "Unavailable"
+
+
 def waka_breakdown(body, y, stats):
     metrics = []
     for key, caption in (("human_readable_daily_average_including_other_language", "Daily average"),
@@ -259,7 +275,7 @@ def waka_breakdown(body, y, stats):
         if value is None:
             continue
         if key == "ai_model_total_cost":
-            value = f"${value:,.2f}"
+            value = spend_vnd(value)
         elif isinstance(value, int):
             value = f"{value:,}"
         metrics.append((caption, value))
@@ -269,16 +285,6 @@ def waka_breakdown(body, y, stats):
         body.extend([f'<rect x="{x}" y="{top-12}" width="3" height="35" rx="1.5" fill="#8175d6"/>',
                      label(x+12, top, caption, "meta"), label(x+12, top+23, value, "name number")])
     y += ((len(metrics)+1)//2)*57
-    if stats.get("ai_model_total_cost") is not None:
-        try:
-            with urlopen("https://open.er-api.com/v6/latest/USD", timeout=8) as response:
-                rates = json.load(response)
-            vnd = stats["ai_model_total_cost"] * rates["rates"]["VND"]
-            rate_date = datetime.fromtimestamp(rates["time_last_update_unix"], timezone.utc).date()
-            body.append(label(16, y, f"Approx. {vnd:,.0f} VND  ·  USD rate on {rate_date}", "meta"))
-            y += 23
-        except (URLError, TimeoutError, KeyError, ValueError, TypeError):
-            print("::warning::USD/VND rate unavailable.")
     best = stats.get("best_day") or {}
     if best.get("date"):
         body.append(label(16, y, f"Best day · {best['date']} · {best.get('text', '')}", "meta"))
