@@ -55,40 +55,47 @@ def public_contributions(owner):
         for label, field in fields.items()
     )
     query = ("query($login:String!) { user(login:$login) { contributionsCollection { "
-             + selections + " } } }")
+             + selections + " contributionCalendar { weeks { contributionDays { date weekday contributionCount color } } } } } }")
     result = json.loads(subprocess.check_output(
         ["gh", "api", "graphql", "-f", f"query={query}", "-f", f"login={owner}"]))
     counts = defaultdict(Counter)
-    for kind, rows in result["data"]["user"]["contributionsCollection"].items():
+    collection = result["data"]["user"]["contributionsCollection"]
+    weeks = collection.pop("contributionCalendar")["weeks"]
+    for kind, rows in collection.items():
         for row in rows:
             if not row["repository"]["isPrivate"]:
                 counts[row["repository"]["nameWithOwner"]][kind] = row["contributions"]["totalCount"]
-    return counts
+    return counts, weeks
 
 
-def render_activity(events, contributions, profile_repo):
+def render_activity(events, contributions, weeks, profile_repo):
     recent = Counter()
     created_repos = set()
-    weekdays = Counter()
     for event in sorted(events, key=lambda item: item["created_at"], reverse=True):
         repo = event["repo"]["name"]
         kind = event["type"]
         recent[repo] += 1
         if kind == "CreateEvent" and event["payload"].get("ref_type") == "repository":
             created_repos.add(repo)
-        day = datetime.fromisoformat(event["created_at"]).astimezone(timezone(timedelta(hours=7))).date()
-        if kind == "PushEvent":
-            weekdays[day.weekday()] += 1
 
-    body = [label(16, 32, "Pushes by weekday", "heading"),
-            label(16, 56, f"Latest {len(events)} public events · UTC+7", "meta"), rule(152)]
-    peak = max(weekdays.values(), default=1)
-    for i, day in enumerate("Mon Tue Wed Thu Fri Sat Sun".split()):
-        x = 48 + 64 * i
-        count = weekdays[i]
-        height = round(67 * count / peak)
-        body.extend([f'<rect class="bar" x="{x-13}" y="{152-height}" width="26" height="{height}" rx="3"/>',
-                     label(x, 145-height, count, anchor="middle"), label(x, 173, day, "meta", "middle")])
+    weeks = weeks[-26:]
+    total = sum(day["contributionCount"] for week in weeks for day in week["contributionDays"])
+    body = [label(16, 32, "Daily contributions", "heading"),
+            label(16, 56, f"{total:,} contributions · last {len(weeks)} calendar weeks", "meta")]
+    previous_month = None
+    for column, week in enumerate(weeks):
+        days = week["contributionDays"]
+        x = 48 + column * 16
+        month = datetime.fromisoformat(days[0]["date"]).strftime("%b")
+        if month != previous_month and column < len(weeks)-1:
+            body.append(label(x, 78, month, "meta"))
+        previous_month = month
+        for day in days:
+            y = 84 + day["weekday"] * 15
+            body.append(f'<rect x="{x}" y="{y}" width="13" height="13" rx="2" fill="{day["color"]}">'
+                        f'<title>{day["date"]}: {day["contributionCount"]} contributions</title></rect>')
+    for row, weekday in ((1, "M"), (3, "W"), (5, "F")):
+        body.append(label(20, 95 + row * 15, weekday, "meta"))
 
     body.append(label(16, 218, "Profile and recent repositories", "heading"))
     body.append(label(16, 243, "Past year’s contributions · recent public event counts", "meta"))
@@ -108,7 +115,7 @@ def render_activity(events, contributions, profile_repo):
             y += 20
         body.append(rule(y-6))
         y += 20
-    save("metrics-activity.svg", "Pushes by weekday and recent activity", body, y-8)
+    save("metrics-activity.svg", "Daily contributions and recent activity", body, y-8)
 
 
 def waka_data(endpoint, token):
@@ -185,7 +192,7 @@ def render_wakatime():
         lifetime_seconds = max(lifetime.get("total_seconds") or 0, aggregate)
         if lifetime_seconds or observed:
             lagging = observed > lifetime_seconds
-            caption = " or more tracked · lifetime total updating" if lagging else " tracked since joining"
+            caption = " or more tracked" if lagging else " tracked since joining"
             body.append(label(16, y, duration(max(lifetime_seconds, observed)) + caption, "name"))
             y += 28
         if observed and (aggregate < observed or not stats.get("languages")):
@@ -203,9 +210,6 @@ def render_wakatime():
 
 
 def waka_breakdown(body, y, stats):
-    if stats.get("is_up_to_date") is False:
-        body.append(label(16, y, "Breakdown updating at WakaTime", "meta"))
-        y += 24
     for key, caption in (("human_readable_daily_average_including_other_language", "Daily average"),
                          ("ai_prompt_events_total", "AI prompts"), ("ai_sessions", "AI sessions"),
                          ("ai_input_tokens", "Input tokens"), ("ai_output_tokens", "Output tokens"),
@@ -260,5 +264,6 @@ owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "wikiepeidia")
 pages = json.loads(subprocess.check_output(
     ["gh", "api", "--paginate", "--slurp", f"users/{owner}/events/public?per_page=100"]))
 events = {event["id"]: event for page in pages for event in page}
-render_activity(events.values(), public_contributions(owner), f"{owner}/{owner}")
+contributions, weeks = public_contributions(owner)
+render_activity(events.values(), contributions, weeks, f"{owner}/{owner}")
 render_wakatime()
