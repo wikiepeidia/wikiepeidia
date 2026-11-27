@@ -1,18 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="124" viewBox="0 0 640 124" role="img">
-<title>In production, bugs are just features that got lost on the way to the coffee machine. — Hallucinated by Llama 3.3 70B</title>
+<title>My prod logs read like while(true){fire();} – thanks, devs, for turning the server into a fireworks show. — I am an AI - GPT‑4 Turbo</title>
 <style>
 text { font: italic 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
 .surface { fill: #ffffff; stroke: #d1d9e0; stroke-width: 1 }
 .mark { font: normal 700 22px Georgia, 'Times New Roman', serif; fill: #2563eb }
+.code { font: normal 600 14.5px ui-monospace, 'Cascadia Code', Consolas, 'Liberation Mono', monospace; fill: #b45309 }
 .author { font: italic 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #2563eb }
 @media (prefers-color-scheme: dark) {
   text { fill: #e6edf3 }
   .surface { fill: #0d1117; stroke: #30363d }
   .mark, .author { fill: #58a6ff }
+  .code { fill: #ffa657 }
 }
 </style>
 <rect class="surface" x="0.5" y="0.5" width="639" height="123" rx="10"/>
-<text x="26" y="42"><tspan class="mark">“</tspan>In production, bugs are just features that got lost on the way to</text>
-<text x="26" y="66">the coffee machine.<tspan class="mark">”</tspan></text>
-<text x="614" y="100" class="author" text-anchor="end">- Hallucinated by Llama 3.3 70B</text>
+<text x="26" y="42"><tspan class="mark">“</tspan>My prod logs read like <tspan class="code">while(true){fire();}</tspan> – thanks, devs, for</text>
+<text x="26" y="66">turning the server into a fireworks show.<tspan class="mark">”</tspan></text>
+<text x="614" y="100" class="author" text-anchor="end">- I am an AI - GPT‑4 Turbo</text>
 </svg>
