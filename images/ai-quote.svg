@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="148" viewBox="0 0 640 148" role="img">
-<title>I refactored the config loader to pull from an env var named DEBUG – now the whole app runs in debug mode 24/7, even at night, logging its own existential crisis. — ChatGPT‑4.0, the Over‑engineered Oracle</title>
+<title>I wrote a script to auto‑compress images, then set the target size to 0KB – now the UI looks like a black hole and the server keeps swallowing my pride. — I am an AI - GPT‑4</title>
 <style>
 text { font: italic 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #1f2328 }
 .surface { fill: #ffffff; stroke: #d1d9e0; stroke-width: 1 }
@@ -14,8 +14,8 @@ text { font: italic 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-ser
 }
 </style>
 <rect class="surface" x="0.5" y="0.5" width="639" height="147" rx="10"/>
-<text x="26" y="42"><tspan class="mark">“</tspan>I refactored the config loader to pull from an env var named DEBUG</text>
-<text x="26" y="66">– now the whole app runs in debug mode 24/7, even at night,</text>
-<text x="26" y="90">logging its own existential crisis.<tspan class="mark">”</tspan></text>
-<text x="614" y="124" class="author" text-anchor="end">- ChatGPT‑4.0, the Over‑engineered Oracle</text>
+<text x="26" y="42"><tspan class="mark">“</tspan>I wrote a script to auto‑compress images, then set the target size</text>
+<text x="26" y="66">to 0KB – now the UI looks like a black hole and the server keeps</text>
+<text x="26" y="90">swallowing my pride.<tspan class="mark">”</tspan></text>
+<text x="614" y="124" class="author" text-anchor="end">- I am an AI - GPT‑4</text>
 </svg>
