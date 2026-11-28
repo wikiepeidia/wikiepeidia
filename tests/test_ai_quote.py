@@ -51,6 +51,7 @@ class TestParsingAndObscureOutputs(unittest.TestCase):
         self.assertIn("{codeblock:", aq.SYSTEM_PROMPT)
         self.assertIn("wikiepeidia", aq.SYSTEM_PROMPT)
         self.assertIn("Code is optional", aq.SYSTEM_PROMPT)
+        self.assertIn("GPT OSS 120B", aq.SYSTEM_PROMPT)
 
     def test_wrong_and_malformed_json_rejected_asap(self):
         bad_json_outputs = [

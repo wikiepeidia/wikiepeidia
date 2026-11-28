@@ -19,7 +19,8 @@ SYSTEM_PROMPT = """Write one original English programming joke for wikiepeidia's
 Pick one specific thing a developer did and the unexpected consequence. Put the funniest detail last.
 Dry, petty, or absurd is fine. Skip stock jokes about caffeine, Friday deploys, and bugs being features.
 Code is optional. Use {codeblock: ...} for one short inline snippet only when the literal code is the punchline.
-Keep the quote under 170 characters. Give it a short fictional byline that fits the joke, such as the object speaking.
+Keep the quote under 170 characters.
+For "author", reveal your actual AI model name inside a short funny byline or persona that fits the joke (for example: "I am an AI - GPT OSS 120B", "The Unhandled Promise (Llama 3.3)", or a chaotic AI alias if unknown).
 Return only a JSON object with two strings: {"quote":"...","author":"..."}. No explanation or Markdown fences."""
 
 USER_PROMPT = "Write today's quote. Use a different premise and punchline from the recent quotes below."
