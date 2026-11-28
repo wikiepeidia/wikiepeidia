@@ -31,7 +31,7 @@ jobs:
       - name: Render rank, streak, and WakaTime
         id: activity
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN || github.token }}
           WAKATIME_TOKEN: ${{ secrets.WAKATIME_OAUTH_TOKEN }}
         run: python3 .github/scripts/profile_activity.py
 
