@@ -4,6 +4,9 @@ import json
 import os
 import random
 import re
+import subprocess
+from difflib import SequenceMatcher
+from xml.etree import ElementTree
 from html import escape
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -12,24 +15,45 @@ from urllib.request import Request, urlopen
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-SYSTEM_PROMPT = (
-    "You are an unhinged, over-caffeinated AI trapped inside wikiepeidia's GitHub profile README. "
-    "wikiepeidia is a chaotic developer who expects every script, workflow, and test to magically work "
-    "on autopilot while writing commit messages like 'UPGRADE TEST AND SHITS!' and 'ADD HILLARIOUSASS QUOTES'. "
-    "Generate ONE wildly funny, razor-sharp developer quote (maximum 170 characters, no hashtags). "
-    "Be ultra creative: roast cursed code behavior, AI hallucinations, production fires, or lazy dev habits. "
-    "When a tiny code snippet makes the joke funnier, wrap the code inline using {codeblock: ...} "
-    "(for example: \"{codeblock: 1 + '1'} is very funny\" or \"{codeblock: git push --force} is my cardio\"). "
-    "You MUST reply with strict JSON only — no markdown fences, no <think> prose, no extra keys — in this exact shape: "
-    '{"quote": "...", "author": "..."}. '
-    "For the author field, reveal what AI model you actually are inside a hilarious or dramatic attribution "
-    "(for example: \"I am an AI - GPT OSS 120B\", \"Hallucinated by Llama\", or a chaotic persona like \"Javascript learner\")."
+SYSTEM_PROMPT = """Write one original English programming joke for wikiepeidia's GitHub profile.
+Pick one specific thing a developer did and the unexpected consequence. Put the funniest detail last.
+Dry, petty, or absurd is fine. Skip stock jokes about caffeine, Friday deploys, and bugs being features.
+Code is optional. Use {codeblock: ...} for one short inline snippet only when the literal code is the punchline.
+Keep the quote under 170 characters. Give it a short fictional byline that fits the joke, such as the object speaking.
+Return only a JSON object with two strings: {"quote":"...","author":"..."}. No explanation or Markdown fences."""
+
+USER_PROMPT = "Write today's quote. Use a different premise and punchline from the recent quotes below."
+
+GROQ_MODELS = (
+    ("openai/gpt-oss-120b", {"max_completion_tokens": 512, "reasoning_effort": "low"}),
+    ("openai/gpt-oss-20b", {"max_completion_tokens": 512, "reasoning_effort": "low"}),
+    (os.environ.get("GROQ_QWEN_MODEL") or "qwen/qwen3.8-27b", {"max_completion_tokens": 512}),
+    ("llama-3.3-70b-versatile", {"max_completion_tokens": 256}),
 )
 
-USER_PROMPT = (
-    "Drop today's funniest dev quote for wikiepeidia's profile (a short {codeblock: ...} snippet is welcome if it hits harder) "
-    "and reveal your true AI model name or a ridiculous alter-ego as the author. Return strict JSON only."
-)
+
+def recent_quotes():
+    """Read the titles of the last eight published cards, including older SVGs."""
+    ref = "refs/remotes/origin/ai-quote-output"
+    commits = subprocess.run(["git", "log", "-8", "--format=%H", ref, "--", "images/ai-quote.svg"],
+                             capture_output=True)
+    history = []
+    for commit in commits.stdout.decode("ascii").splitlines():
+        blob = subprocess.run(["git", "show", f"{commit}:images/ai-quote.svg"], capture_output=True)
+        if blob.returncode == 0:
+            try:
+                title = ElementTree.fromstring(blob.stdout).findtext("{http://www.w3.org/2000/svg}title")
+            except ElementTree.ParseError:
+                continue
+            if title:
+                history.append(title.rsplit(" — ", 1)[0][:220])
+    return history
+
+
+def comparable_quote(text):
+    visible = "".join(value for _, value in tokenize_quote(text))
+    return " ".join(re.findall(r"\w+", visible.casefold()))
+
 
 FALLBACK_QUOTES = [
     (
@@ -233,13 +257,13 @@ def _wrap_segments(segments, max_chars=66):
     return lines or [[(False, "")]]
 
 
-def call_provider(name, url, api_key, model, extra_payload=None):
+def call_provider(name, url, api_key, model, extra_payload=None, history=()):
     """Call an OpenAI-compatible chat completions endpoint and return (quote, author)."""
     payload = {
         "model": model,
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": USER_PROMPT},
+            {"role": "user", "content": USER_PROMPT + "\n" + json.dumps(list(history), ensure_ascii=False)},
         ],
         "temperature": 1.0,
     }
@@ -272,20 +296,15 @@ def call_provider(name, url, api_key, model, extra_payload=None):
     return parsed
 
 
-def fetch_ai_quote(rng=None):
+def fetch_ai_quote(rng=None, history=()):
     """Try Groq and OpenRouter with automatic failover and safe local fallback."""
     rng = rng or random
     candidates = []
     groq_key = (os.environ.get("GROK_API_KEY") or os.environ.get("GROQ_API_KEY") or "").strip()
     openrouter_key = (os.environ.get("OPENROUTER_API_KEY") or "").strip()
     if groq_key:
-        candidates.append((
-            "groq",
-            GROQ_URL,
-            groq_key,
-            "openai/gpt-oss-120b",
-            {"max_completion_tokens": 512, "reasoning_effort": "low"},
-        ))
+        primary, backup = rng.sample(GROQ_MODELS, 2)
+        candidates.append(("groq", GROQ_URL, groq_key, *primary))
     if openrouter_key:
         candidates.append((
             "openrouter",
@@ -297,17 +316,14 @@ def fetch_ai_quote(rng=None):
     if len(candidates) > 1:
         rng.shuffle(candidates)
     if groq_key:
-        candidates.append((
-            "groq-fallback",
-            GROQ_URL,
-            groq_key,
-            "llama-3.3-70b-versatile",
-            {"max_completion_tokens": 256},
-        ))
+        candidates.append(("groq-fallback", GROQ_URL, groq_key, *backup))
 
     for name, url, key, model, extra in candidates:
         try:
-            quote, author = call_provider(name, url, key, model, extra)
+            quote, author = call_provider(name, url, key, model, extra, history)
+            normalized = comparable_quote(quote)
+            if any(SequenceMatcher(None, normalized, comparable_quote(old)).ratio() >= 0.86 for old in history):
+                raise ValueError("Repeated quote")
             return quote, author, True
         except HTTPError as error:
             hint = " — key may be expired" if error.code in (401, 403) else ""
@@ -371,7 +387,7 @@ def render_quote_svg(quote, author, output_path=Path("images/ai-quote.svg")):
 
 
 def main():
-    quote, author, from_api = fetch_ai_quote()
+    quote, author, from_api = fetch_ai_quote(history=recent_quotes())
     render_quote_svg(quote, author)
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:

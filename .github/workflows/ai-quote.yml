@@ -20,12 +20,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Load recent published quotes
+        run: |
+          if git ls-remote --exit-code --heads origin ai-quote-output >/dev/null; then
+            git fetch --depth=8 origin +refs/heads/ai-quote-output:refs/remotes/origin/ai-quote-output
+          fi
+
       - name: Generate AI quote card
         id: quote
         env:
-          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+          GROK_API_KEY: ${{ secrets.GROQ_API_KEY || secrets.GROK_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: python3 .github/scripts/ai_quote.py
+        run: |
+          if [[ -n "$GROK_API_KEY" ]]; then
+            # Preview IDs change. Prefer a Qwen chat model available to this account.
+            GROQ_QWEN_MODEL=$(curl -fsS --max-time 8 -H "Authorization: Bearer $GROK_API_KEY" https://api.groq.com/openai/v1/models |
+              jq -r '[.data[].id | select(startswith("qwen/qwen3"))] | sort | last // empty') || GROQ_QWEN_MODEL=""
+            export GROQ_QWEN_MODEL
+          fi
+          python3 .github/scripts/ai_quote.py
 
       - name: Check whether an existing quote card can be preserved
         id: publish_gate

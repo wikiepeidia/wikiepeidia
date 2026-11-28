@@ -50,7 +50,7 @@ class TestParsingAndObscureOutputs(unittest.TestCase):
     def test_prompt_mentions_codeblock_model_reveal_and_repo_owner(self):
         self.assertIn("{codeblock:", aq.SYSTEM_PROMPT)
         self.assertIn("wikiepeidia", aq.SYSTEM_PROMPT)
-        self.assertIn("GPT OSS 120B", aq.SYSTEM_PROMPT)
+        self.assertIn("Code is optional", aq.SYSTEM_PROMPT)
 
     def test_wrong_and_malformed_json_rejected_asap(self):
         bad_json_outputs = [
@@ -200,8 +200,9 @@ class TestProviderCallsAndFailover(unittest.TestCase):
         self.assertEqual(captured["url"], aq.GROQ_URL)
         self.assertEqual(captured["auth"], "Bearer gsk_test_key")
         self.assertTrue(captured["ua"].startswith("wikiepeidia-"))
-        self.assertEqual(captured["body"]["model"], "openai/gpt-oss-120b")
-        self.assertEqual(captured["body"]["reasoning_effort"], "low")
+        self.assertIn(captured["body"]["model"], dict(aq.GROQ_MODELS))
+        for key, value in dict(aq.GROQ_MODELS)[captured["body"]["model"]].items():
+            self.assertEqual(captured["body"][key], value)
         self.assertEqual(captured["timeout"], 25)
 
     def test_openrouter_free_headers_and_model_reveal(self):
@@ -314,6 +315,15 @@ class TestProviderCallsAndFailover(unittest.TestCase):
             self.assertIn((quote, author), aq.FALLBACK_QUOTES)
             self.assertNotIn(secret1, buf.getvalue())
             self.assertNotIn(secret2, buf.getvalue())
+
+    def test_repeat_with_inline_code_and_new_byline_tries_next_model(self):
+        old = "The logger wrote its own resignation letter."
+        with patch.dict(os.environ, {"GROQ_API_KEY": "test"}, clear=True), patch.object(
+            aq, "call_provider", side_effect=[("The {codeblock: logger} wrote its own resignation letter!", "New"),
+                                             ("The clipboard still has my first draft.", "Clipboard")]
+        ) as provider:
+            self.assertEqual(aq.fetch_ai_quote(history=[old])[0], "The clipboard still has my first draft.")
+            self.assertEqual(provider.call_count, 2)
 
     def test_missing_or_whitespace_secrets_use_fallback_quote(self):
         with patch.dict(os.environ, {"GROK_API_KEY": "   ", "OPENROUTER_API_KEY": ""}, clear=False), \
